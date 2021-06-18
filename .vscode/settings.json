@@ -1,0 +1,8 @@
+{
+	"python.pythonPath": "ef_lib/bin/python",
+	"[python]": {
+		
+		"editor.wordBasedSuggestions": false
+	},
+	"python.linting.enabled": false
+}

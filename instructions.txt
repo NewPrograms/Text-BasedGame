@@ -1,0 +1,18 @@
+=============================================================================================================================================
+
+There are different choices in the game. To pick a choice type the number of the choice on choose.
+If the user types out the wrong number or word, it won't be accepted. 
+
+The main goal of the game is to escape the forest. Note! Each choice in the game has timer of 5 seconds on
+them. If the player fails to pick a choice at the given time frame while battle he/she will die. However,
+if not int battle the choice will be randomized.
+
+There's a dodging function choice among the choices, however this choice isn't 100% meaning that when the 
+player presses the dodge there is a chance that player won't be able to. Dodging has a myriad of factors like
+stamina, strength, agility, and health. At the same time, there is also an attack choice that depends if the 
+monster is "tired" meaning that it has low stamina, which will result in it being 100% accurate. However, if the
+monster not "tired" there is a high chance that the player's character might get hurt.
+
+Gold can be used to trade for items, food etc. Mana isn't implemeted yet sadly.
+
+===================================================Fin=======================================================================================
