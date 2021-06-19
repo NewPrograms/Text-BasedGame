@@ -3,9 +3,9 @@ from psycopg2 import extensions
 import time
 class Create:
      
-     def __init__(self, u_name, p_word):
-        self.acc_u_name = u_name
-        self.acc_p_word = p_word
+     def __init__(self, username, password):
+        self.acc_u_name = username
+        self.acc_p_word = password
      
      def create_user(self):
         conn = psycopg2.connect(dbname="postgres", user="postgres", password="12", host="127.0.0.1")
@@ -30,15 +30,22 @@ class Create:
             self.conn.close()
 
      def create_table(self, statements):
+
         self.conn = psycopg2.connect(dbname=f'{self.acc_u_name}_game', user=f'{self.acc_u_name}', 
                                      password=f'{self.acc_p_word}', host='127.0.0.1' )
 
         self.cur = self.conn.cursor()
+
         for key, val in statements.items():
-            self.cur.execute("CREATE TABLE {} ({})".format(key, val)) 
+
+            self.cur.execute("CREATE TABLE {} ({})".format(key, val))
+
         self.conn.commit()
+
         self.cur.close()
+
         self.conn.close()
+
         print("Database Made!")
 
      def input_val(self, statements):
@@ -79,17 +86,8 @@ class Create:
         self.cur.close()
         self.conn.close()
 
-     def pull_val(self, statement):
-        self.conn = psycopg2.connect(dbname=f'{self.acc_u_name}_passwords', user=f'{self.acc_u_name}', 
-                                          password=f'{self.acc_p_word}', host='127.0.0.1' )
-        self.cur = self.conn.connect()
-        self.execute("{}".format())
-        self.values = self.cur.fetchone()
-        self.cur.close()
-        self.conn.close()
 
-        return self.values
-     
+
 class Delete:
      def __init__(self, u_name, p_word, will_del):
         self.will_del = will_del
@@ -117,5 +115,27 @@ class Delete:
                time.sleep(3)
                print("\nWrong site_name!")
                self.deleted = False 
-              
-             
+
+class Pull:
+
+    def __init__(self):
+        self.acc_u_name = []
+        self.acc_p_word = []
+
+    def pull_val(self, statement):
+        self.conn = psycopg2.connect(dbname=f'{self.acc_u_name[0]}_game', user=f'{self.acc_u_name[0]}', 
+                                          password=f'{self.acc_p_word[0]}', host='127.0.0.1' )
+        self.cur = self.conn.connect()
+        self.execute("{}".format(statement))
+        self.values = self.cur.fetchone()
+        self.cur.close()
+        self.conn.close()
+
+        return self.values
+
+    def add_username(self, username):
+      self.acc_u_name.append(username)
+   
+    def add_password(self, password):
+      self.acc_p_word.append(password)
+      

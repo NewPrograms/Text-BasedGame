@@ -1,12 +1,15 @@
 import psycopg2
-from create import Create
+from create import Create, Pull
 class User():
     # This is the user class
-    def __init__(self, acc_u_name, acc_p_word):
-        self.acc_u_name = acc_u_name
-        self.acc_p_word =acc_p_word
+    def __init__(self, u_name, p_word):
+        self.acc_u_name = u_name
+        self.acc_p_word = p_word
         self.active = True
         self.create = Create(self.acc_u_name, self.acc_p_word)
+        self.pull = Pull()
+        self.pull.add_username(self.acc_u_name)
+        self.pull.add_password(self.acc_p_word)
         self.to_input = {
                 'player':[
                         'player_name, health, stamina, damage, gold, mana', 
@@ -36,46 +39,46 @@ class User():
                 ],
             }
 
-        self.to_create{
-                "player":[
+        self.to_create = {
+                "player":
                          'player_name varchar(50) PRIMARY KEY NOT NULL,'+
                          'health int NOT NULL, stamina int NOT NULL,'+ 
-                         'damage int NOT NULL, gold int NOT NULL, mana int NOT NULL);'
-                ],
+                         'damage int NOT NULL, gold int NOT NULL, mana int NOT NULL'
+                ,
 
-                "items":[ 
+                "items":
                         'item_name varchar(100) PRIMARY KEY NOT NULL,' +
                         'damage int NOT NULL, durability int NOT NULL,' +
-                        'selling_price int NOT NULL, purchasing_price int NOT NULL);'
-                ],
+                        'selling_price int NOT NULL, purchasing_price int NOT NULL'
+                ,
 
-                "storage":[ 
+                "storage": 
                         'player_name varchar(50) NOT NULL references player(player_name),'+
-                        'item_name varchar(100) NOT NULL references items(item_name), quantity int NOT NULL);'
-                ],
+                        'item_name varchar(100) NOT NULL references items(item_name), quantity int NOT NULL'
+                ,
 
-                "monsters":[ 
+                "monsters": 
                           'monster_name varchar(50) PRIMARY KEY NOT NULL,' +
                           'health int NOT NULL, stamina int NOT NULL, damage int NOT NULL, mana int NOT NULL,' +
-                          'speed int NOT NULL, gold_drop int NOT NULL);' 
-                ],
+                          'speed int NOT NULL, gold_drop int NOT NULL' 
+                ,
 
-                "merchant":[ 
+                "merchant":
                         'merchant_id varchar(100) PRIMARY KEY NOT NULL, merchant_name varchar(50) NOT NULL,' +
-                        'merchant_location varchar(150) NOT NULL);',
-                ],
+                        'merchant_location varchar(150) NOT NULL'
+                ,
 
-                "merchant_storage":[  
+                "merchant_storage":  
                          'merchant_id varchar(50) NOT NULL references merchant(merchant_id),' +
-                         'item_name varchar(100) NOT NULL references items(item_name), quantity int NOT NULL);'
-                ],
+                         'item_name varchar(100) NOT NULL references items(item_name), quantity int NOT NULL'
+                ,
 
-                "item_ordered":[
+                "item_ordered":
                         'merchant_id varchar(50) NOT NULL references merchant(merchant_id),'+
                         'item_name varchar(100) NOT NULL references items(item_name), damage int NOT NULL,'+
                         'quantity int NOT NULL, durability int NOT NULL, purchasing_price int NOT NULL, '+
-                        'total_price int NOT NULL);'
-                ],
+                        'total_price int NOT NULL'
+                ,
 
         }
 
@@ -100,6 +103,7 @@ class User():
                 self.cur.close()
                 
                 self.conn.close()
+
                 
 
             except:
@@ -115,12 +119,6 @@ class User():
                 self.create.input_val(self.to_input)
 
                 print("We've already registered you")
-
-            
-
-
-
-
 
 
 

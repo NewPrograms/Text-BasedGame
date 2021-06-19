@@ -1,10 +1,11 @@
 # This is the part where all scenarios are typed our or played out.
+from combat import Combat
 
 class Scenes:
 
 
-    def __init__():
-         pass
+    def __init__(self):
+        self.combat = Combat()
 
     def starting_scene(self):
         print(
@@ -16,6 +17,7 @@ class Scenes:
             "ask for reinforcements. Being close to him I was picked. Unfortunately, zombies noticed me moving",
             " and have been hunting me ever since.", "Damn it! How can I escape this! "
             )
+    
 
     def second_act(self):
         print(
@@ -24,6 +26,8 @@ class Scenes:
             "(Sees temple...) What is that! Looks amazing!(Hears clanking noises)"
             "Oh crap looks like I have to do this all over again."
         )
+        self.combat.options()
+
 
         
 

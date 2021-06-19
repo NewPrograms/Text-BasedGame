@@ -2,6 +2,7 @@
 # Start, where the player can exit, start, or see the intructions.
 import sys
 import time
+import read_lines
 from  user import User
 class Menu:
 
@@ -32,35 +33,20 @@ class Menu:
         chosen = input("Choose: ")
 
         if chosen == '1':
-            self.u_name = self.make_u_name()
-            self.p_word = self.make_p_word()
+            self.u_name = input("Add username: ")
+            self.p_word = input("Add a password: ")
             self.user = User(self.u_name, self.p_word)
+            
             self.user.auth()
+
+            self.start_game = True
+            
         elif chosen == '2':
-            self.instructions()
+            read_lines.read_lines('instructions.txt')
+
         elif chosen == '3':
             sys.exit
+ 
         else:
             print("Invalid Command! ")
-		
-    def make_u_name(self):
-        # This is to enter the user_name of the code
-        self.username = input("Enter user_name: ")
-        return self.username
-        
-    def make_p_word(self):
-        # This is to enter the p_word of the code
-        self.p_word = input("Enter p_word: ")
-        return self.p_word
-	
-    def instructions(self):
-        filename = "instructions.txt"
-
-        with open(filename, 'r') as f:
-            content = f.readlines()
-            
-        for line in content:
-            time.sleep(2)
-            print(line)
-
-        f.close()
+			

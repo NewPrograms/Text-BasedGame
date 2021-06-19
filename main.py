@@ -2,22 +2,28 @@
 import sys
 import psycopg2
 from menu import Menu
-
-
+from scenarios import Scenes
 class Main:
 
     def __init__(self):
         # Initialize the variables
         self.menu = Menu()
+        self.scenarios = Scenes()
 
     def __run__(self):
         # Functions will ran here
-        self.menu.start_menu()
 
         if self.menu.start_game is not False:
             while True:
-                pass
-                
+                self.act()
+        
+        else:
+             self.menu.start_menu()
+    
+        
+    def act(self):
+        self.scenarios.starting_scene()
+        self.scenarios.second_act()
 
 if __name__ == '__main__':
     main = Main()
