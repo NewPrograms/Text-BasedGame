@@ -118,24 +118,28 @@ class Delete:
 
 class Pull:
 
-    def __init__(self):
-        self.acc_u_name = []
-        self.acc_p_word = []
-
+    def __init__(self, u_name, p_word):
+         self.acc_u_name = u_name
+         self.acc_p_word = p_word
+    
     def pull_val(self, statement):
-        self.conn = psycopg2.connect(dbname=f'{self.acc_u_name[0]}_game', user=f'{self.acc_u_name[0]}', 
-                                          password=f'{self.acc_p_word[0]}', host='127.0.0.1' )
-        self.cur = self.conn.connect()
-        self.execute("{}".format(statement))
+        self.conn = psycopg2.connect(dbname=f'{self.acc_u_name}_game', user=f'{self.acc_u_name}', 
+                                          password=f'{self.acc_p_word}', host='127.0.0.1' )
+        self.cur = self.conn.cursor()
+        self.cur.execute("{}".format(statement))
         self.values = self.cur.fetchone()
         self.cur.close()
         self.conn.close()
 
         return self.values
 
-    def add_username(self, username):
-      self.acc_u_name.append(username)
-   
-    def add_password(self, password):
-      self.acc_p_word.append(password)
-      
+    def update_values(self, statement):
+        self.conn = psycopg2.connect(dbname=f'{self.acc_u_name}_game', user=f'{self.acc_u_name}', 
+                                          password=f'{self.acc_p_word}', host='127.0.0.1' )
+        self.cur = self.conn.cursor()
+        self.cur.execute("UPDATE {}".format(statement))
+        self.values = self.cur.fetchone()
+        self.cur.close()
+        self.conn.close()
+
+        return self.values

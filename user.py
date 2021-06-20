@@ -4,12 +4,13 @@ class User():
     # This is the user class
     def __init__(self, u_name, p_word):
         self.acc_u_name = u_name
+
         self.acc_p_word = p_word
+
         self.active = True
+
         self.create = Create(self.acc_u_name, self.acc_p_word)
-        self.pull = Pull()
-        self.pull.add_username(self.acc_u_name)
-        self.pull.add_password(self.acc_p_word)
+
         self.to_input = {
                 'player':[
                         'player_name, health, stamina, damage, gold, mana', 
@@ -103,7 +104,8 @@ class User():
                 self.cur.close()
                 
                 self.conn.close()
-
+                
+                return True
                 
 
             except:
@@ -120,7 +122,7 @@ class User():
 
                 print("We've already registered you")
 
-
+                return False
 
 
 

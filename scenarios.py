@@ -4,9 +4,9 @@ from combat import Combat
 class Scenes:
 
 
-    def __init__(self):
-        self.combat = Combat()
+    def __init__(self, u_name, password):
 
+        self.combat = Combat(u_name, password)
     def starting_scene(self):
         print(
             "Huff! Huff! Those zombies are everywhere! I don't know if I can escape\nn",
@@ -26,8 +26,13 @@ class Scenes:
             "(Sees temple...) What is that! Looks amazing!(Hears clanking noises)"
             "Oh crap looks like I have to do this all over again."
         )
-        self.combat.options()
+        if self.combat.options() == True:
+            self.third_act()
 
+        else:
+            self.combat.options()
 
+    def third_act(self):
+        print('lmao')
         
 

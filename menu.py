@@ -3,12 +3,10 @@
 import sys
 import time
 import read_lines
-from  user import User
 class Menu:
 
     def __init__(self):
         self.start_game = False
-
     def start_menu(self):
         """
             This will act as the start menu of the program
@@ -33,12 +31,6 @@ class Menu:
         chosen = input("Choose: ")
 
         if chosen == '1':
-            self.u_name = input("Add username: ")
-            self.p_word = input("Add a password: ")
-            self.user = User(self.u_name, self.p_word)
-            
-            self.user.auth()
-
             self.start_game = True
             
         elif chosen == '2':

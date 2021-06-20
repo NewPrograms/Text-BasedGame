@@ -1,14 +1,15 @@
 import time
 import sys
-from operator import itemgetter
-from create import Pull
+from monster import Monster
+from create import Create, Pull
 from numpy.random import choice
+from calc_poss import Calculate
 class Combat:
 
-    def __init__(self):
-        self.pull = Pull()
-        
-    
+    def __init__(self, username, password):
+        self.pull = Pull() 
+        self.calculate_poss = Calculate(username, password)        
+        self.monster = Monster()
     def options(self):
 
         print(
@@ -17,12 +18,12 @@ class Combat:
             "[3] Defend!\n",
             "[4] Hide!\n"
                 )
+        return self.results()
 
     def results(self):
 
         chosen = input("Choose: ")
 
-        self.count = self.countdown(5)
 
         if chosen == "1":
 
@@ -30,9 +31,22 @@ class Combat:
 
         elif chosen == "2":
 
-            self.result = self.run()
+            if self.run() == "Successful":
+                return True
 
-            return self.result
+            else:
+                self.res = self.monster.attack(self.calculate_poss.undeadmon_att_succ())
+
+                if self.res == 'Miss':
+                    print("It missed!")
+                    statement = "player, monsters SET player.stamina = -5," +
+                                 " monsters.stamina = -5, WHERE monsters.monster_name = zombies"
+                    self.pull.update_values(statement)
+
+                else:
+                    print("You got hit! -{} health points")
+                    statement = "player, monsters SET player.health = {} monster.stamina = -5, WHERE monsters.monster_name = zombies".format()
+                return False
         elif chosen == "3":
 
             pass
@@ -46,11 +60,6 @@ class Combat:
             print("Invalid Choice!")
             sys.exit()
         
-        if self.count == 'stop':
-            self.random_choice()
-        
-        else:
-            time.sleep(5-self.count)
 
 
     def run(self):
@@ -58,11 +67,10 @@ class Combat:
         # Get the value from calc_success
         # and calculate it to get the weights of choices
 
-        self.succ_chance = self.calc_success
 
         choices = ['Successful', 'You got hit!']
 
-        return choice(choices, p=[self.succ_chance, abs(1-self.succ_chance)])
+        return choice(choices, p=[self.calculate_poss.calc_success(), self.calculate_poss.calc_fail() ])
 
     def hide(self):
            choices = ['Successful', 'The creature saw you!', 'The creature saw you and pounced at you!']
@@ -70,16 +78,6 @@ class Combat:
 
     def attack(self):
         pass
-    def calc_success(self):
-        # Pull values from the player table and calculate them
-
-        self.statement =  'SELECT health, stamina FROM player'
-
-        # if have time optimize these 2 lines of code.
-        self.health, self.stamina = itemgetter(0,1)(self.pull.pull_val(self.statement))
-
-        return (self.health/100 + self.stamina/100)/3
-
 
     def countdown(time_sec):
         while time_sec:
