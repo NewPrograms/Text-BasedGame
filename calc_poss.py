@@ -21,16 +21,21 @@ class Calculate:
         return abs(1 - self.calc_success())
 
 
-    def undeadmon_att_succ(self):
+    def undeadmon_att_succ(self, monster):
         # This is for zombie and skeleton who are undead!
-        
-        self.statement = "SELECT health, speed FROM monsters WHERE monster_name = 'zombies'"   
-        self.health, self.speed = itemgetter(0,1)(self.pull.pull_val(self.statement))
-        self.ans = (self.health/100+self.speed/100)/5
-        self.total.append((self.health/100+self.speed/100)/5)
-        self.division(5, self.ans)
-        return self.get_final_val()
-
+        if len(self.total) >= 6:
+            for del_val in self.total:
+                self.total.remove(del_val)
+        else:
+            self.statement = "SELECT health, speed FROM monsters WHERE monster_name = '{}'".format(monster)  
+            self.health, self.speed = itemgetter(0,1)(self.pull.pull_val(self.statement))
+            self.ans = (self.health/100+self.speed/100)/5
+            self.total.append((self.health/100+self.speed/100)/5)
+            self.division(5, self.ans)
+            self.get_final_val()
+            print(self.total)
+            return self.total
+    
     def division(self, n, val):
 
         if n <= 1:
@@ -42,4 +47,4 @@ class Calculate:
 
     def get_final_val(self):
         self.total.append(1-sum(self.total))
-        return self.total.sort(reverse=True)
+    

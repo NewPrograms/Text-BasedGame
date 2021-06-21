@@ -5,8 +5,9 @@ class Scenes:
 
 
     def __init__(self, u_name, password):
-
-        self.combat = Combat(u_name, password)
+       self.u_name = u_name
+       self.password = password
+            
     def starting_scene(self):
         print(
             "Huff! Huff! Those zombies are everywhere! I don't know if I can escape\nn",
@@ -17,7 +18,13 @@ class Scenes:
             "ask for reinforcements. Being close to him I was picked. Unfortunately, zombies noticed me moving",
             " and have been hunting me ever since.", "Damn it! How can I escape this! "
             )
-    
+        self.monster = 'zombies'
+        self.combat = Combat(self.u_name, self.password, self.monster)
+        if self.combat.options() == True:
+            self.second_act()
+
+        else:
+            self.combat.options()
 
     def second_act(self):
         print(
@@ -26,12 +33,14 @@ class Scenes:
             "(Sees temple...) What is that! Looks amazing!(Hears clanking noises)"
             "Oh crap looks like I have to do this all over again."
         )
+        self.monster = 'skeletons'
+        self.combat = Combat(self.u_name, self.password, self.monster)
+        self.skeleton = True
         if self.combat.options() == True:
             self.third_act()
 
         else:
             self.combat.options()
-
     def third_act(self):
         print('lmao')
         

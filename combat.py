@@ -6,10 +6,12 @@ from numpy.random import choice
 from calc_poss import Calculate
 class Combat:
 
-    def __init__(self, username, password):
-        self.pull = Pull() 
+    def __init__(self, username, password, monster):
+        self.monster_name = monster
+    
+        self.monster = Monster(monster)
+        self.pull = Pull(username, password) 
         self.calculate_poss = Calculate(username, password)        
-        self.monster = Monster()
     def options(self):
 
         print(
@@ -32,21 +34,38 @@ class Combat:
         elif chosen == "2":
 
             if self.run() == "Successful":
+                self.pull.update_values(
+                    "player SET stamina = {} - 5".format(self.get_stamina())
+                    )
+                self.pull.update_values(
+                    "monsters SET stamina = {} -5 WHERE monster_name = '{}'"
+                    .format(self.get_mon_stamina(), self.monster_name)
+                    )
                 return True
 
             else:
-                self.res = self.monster.attack(self.calculate_poss.undeadmon_att_succ())
-
+                self.res = self.monster.attack(self.calculate_poss.undeadmon_att_succ(self.monster_name))
+                print(self.res)
                 if self.res == 'Miss':
                     print("It missed!")
-                    statement = "player, monsters SET player.stamina = -5," +
-                                 " monsters.stamina = -5, WHERE monsters.monster_name = zombies"
-                    self.pull.update_values(statement)
-
+                    self.pull.update_values(
+                        "player SET stamina = {} - 5" 
+                        .format(self.get_stamina())
+                    )
+                    self.pull.update_values(" monsters.stamina = {} - 5, WHERE monsters.monster_name = {}"
+                                            .format(self.get_mon_stamina(), self.monster_name))
                 else:
-                    print("You got hit! -{} health points")
-                    statement = "player, monsters SET player.health = {} monster.stamina = -5, WHERE monsters.monster_name = zombies".format()
-                return False
+                    print("You got hit! -{} health points".format(self.res))
+                    self.pull.update_values(
+                            "player SET health = {} - {}".format(
+                            self.get_health(),
+                            self.res) 
+                            )
+                                            
+                    self.pull.update_values(
+                        "monsters SET stamina = {} - 5 WHERE monster_name = '{}'"
+                        .format(self.get_mon_stamina(), self.monster))
+            return False
         elif chosen == "3":
 
             pass
@@ -67,14 +86,16 @@ class Combat:
         # Get the value from calc_success
         # and calculate it to get the weights of choices
 
-
-        choices = ['Successful', 'You got hit!']
-
-        return choice(choices, p=[self.calculate_poss.calc_success(), self.calculate_poss.calc_fail() ])
+        return choice(
+                ['Successful', 'You got hit!'], 
+                p=[self.calculate_poss.calc_success(), self.calculate_poss.calc_fail()]
+                )
 
     def hide(self):
-           choices = ['Successful', 'The creature saw you!', 'The creature saw you and pounced at you!']
-           return choice(choices,  p=[0.2, 0.5, 0.3])
+           return choice(
+                        ['Successful', 'The creature saw you!', 'The creature saw you and pounced at you!'], 
+                        p=[0.2, 0.5, 0.3]
+                        )
 
     def attack(self):
         pass
@@ -95,6 +116,17 @@ class Combat:
         return "stop"
 
     def random_choice(self):
-        choices = [self.attack(), self.hide(), self.run(), self.defend()]
-        
-        return choice(choices)
+        return choice([self.attack(), self.hide(), self.run(), self.defend()])
+
+    def get_health(self):
+        for val in self.pull.pull_val("SELECT health FROM player"):
+                        return val
+    
+    def get_stamina(self):
+        for val in self.pull.pull_val("SELECT stamina FROM player"):
+            return val
+
+    def get_mon_stamina(self):
+        for val in self.pull.pull_val("SELECT stamina FROM monsters " + 
+                                    "WHERE monster_name = '{}'".format(self.monster_name)):
+            return val

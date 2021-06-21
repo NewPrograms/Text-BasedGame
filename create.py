@@ -138,8 +138,10 @@ class Pull:
                                           password=f'{self.acc_p_word}', host='127.0.0.1' )
         self.cur = self.conn.cursor()
         self.cur.execute("UPDATE {}".format(statement))
-        self.values = self.cur.fetchone()
+        self.conn.commit()
+        self.cur.execute("SELECT * FROM monsters")
+        self.val1 = self.cur.fetchall()
         self.cur.close()
         self.conn.close()
-
-        return self.values
+        print("Success!")
+        print(self.val1)
