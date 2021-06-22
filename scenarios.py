@@ -19,12 +19,10 @@ class Scenes:
             " and have been hunting me ever since.", "Damn it! How can I escape this! "
             )
         self.monster = 'zombies'
-        self.combat = Combat(self.u_name, self.password, self.monster)
-        if self.combat.options() == True:
+        if self.conditions(self.monster) == True:
             self.second_act()
 
-        else:
-            self.combat.options()
+
 
     def second_act(self):
         print(
@@ -34,14 +32,25 @@ class Scenes:
             "Oh crap looks like I have to do this all over again."
         )
         self.monster = 'skeletons'
-        self.combat = Combat(self.u_name, self.password, self.monster)
-        self.skeleton = True
-        if self.combat.options() == True:
+        if self.conditions(self.monster) == True:
             self.third_act()
+        
+        
+        
+        else: 
+            self.third_act() # This is a temporary fix for a bug
 
-        else:
-            self.combat.options()
     def third_act(self):
         print('lmao')
         
+
+    def conditions(self, monsters):
+        # The cause of the bug is unkown but this is the possbile reason.
+        self.combat = Combat(self.u_name, self.password, monsters)
+        if self.combat.options() == True:
+            return True
+
+
+        else:
+            self.conditions(self.monster)
 
