@@ -18,10 +18,10 @@ class Monster:
 			return choice(['Miss', 6, 7, 8, 9, 10], p=poss)
 			
 
-	def loses_stamina(self): 
+	def loses_stamina(self, to_lose):
 			self.pull.update_values(
-			"monsters SET stamina = {} - 5 WHERE monster_name = '{}'"
-			.format(self.get.get_mon_stamina(self.monster), self.monster)
+			"monsters SET stamina = {} - {} WHERE monster_name = '{}'"
+			.format(self.get.get_mon_stamina(self.monster), to_lose, self.monster)
 			)
 
 	def dodge(self, poss):
@@ -29,7 +29,6 @@ class Monster:
 
 	def monster_damaged(self, damage):
 		print("The monster has been damaged {}".format(damage))
-		print(self.monster)
 		self.pull.update_values(
 			"monsters SET health = {} - {} WHERE monster_name = '{}'"
 			.format(self.get.get_mon_health(self.monster), damage, self.monster)

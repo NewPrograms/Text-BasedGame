@@ -82,7 +82,8 @@ class Calculate:
             self.total = [abs(x - 0.1) for x in self.total]
             self.total.append(1-sum(self.total))
         
-
+    def calculate_stamina_consumed(self):
+        return ((100/self.get.get_stamina())*0.9)+3
 
 
     def mon_calc_dodge(self, monster):

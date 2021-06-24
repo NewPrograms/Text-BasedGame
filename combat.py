@@ -1,9 +1,10 @@
 import time
 import sys
+import threading
 from create import Pull
 from player import Player
 from monster import Monster
-from numpy.random import choice
+from numpy.random import choice, random
 from calc_poss import Calculate
 from get_values import Get_Values
 class Combat:
@@ -14,6 +15,8 @@ class Combat:
         self.get = Get_Values(username, password)
         self.monster = Monster(monster, username, password)
         self.calculate_poss = Calculate(username, password)
+        self.countdown = threading.Thread(target=self.countdown(), args=(1,))
+        self.countdown.start()
         
         self.monster_name = monster
     
@@ -31,7 +34,6 @@ class Combat:
     def results(self):
 
         chosen = input("Choose: ")
-
 
         if chosen == "1":
             if self.get.get_mon_stamina(self.monster_name) <= 10:
@@ -52,18 +54,18 @@ class Combat:
                                         )
                        )
                        self.player.loses_stamina()
-                       self.monster.loses_stamina()
+                       self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
                        return False
                         
                     else:
                         self.player.loses_stamina()
-                        self.monster.loses_stamina()
+                        self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
                         return False
                 else:
                     print("It hit!")
                     self.monster.monster_damaged(self.attack())
                     self.player.loses_stamina()
-                    self.monster.loses_stamina()
+                    self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
                     return True if self.monster.is_dead() else False
 
             
@@ -72,7 +74,7 @@ class Combat:
             if self.run() == "Successful":
                 print(" You have ran away!")
                 self.player.loses_stamina()
-                self.monster.loses_stamina()
+                self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
                 return True
 
             else:
@@ -80,8 +82,8 @@ class Combat:
                                         self.monster.attack(
                                         self.calculate_poss.undeadmon_att_succ(self.monster_name)
                                         ))
-                    self.players.loses_stamina()
-                    self.monster.loses_stamina()
+                    self.player.loses_stamina()
+                    self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
                     return False
                     
         elif chosen == "3":
@@ -103,7 +105,7 @@ class Combat:
             else:
                 print("the monster saw you and has now hit you!.")
                 self.player.got_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(self.monster_name))) 
-                self.monster.loses_stamina()
+                self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
                 return False
         
         elif chosen == "5":
@@ -140,23 +142,25 @@ class Combat:
                     p=self.calculate_poss.get_final_val()
                     )
 
-    def countdown(time_sec):
+    def countdown(self):
+        global time_sec
+        time_sec = 5
         while time_sec:
 
             mins, secs = divmod(time_sec, 60)
 
             timeformat = '{:02d}:{:02d}'.format(mins, secs)
             
-            print(timeformat, end='\r')
-            
             time.sleep(1)
 
             time_sec -= 1
 
-        return "stop"
+        print('stop')
+        return self.random_choice()
+        
 
     def random_choice(self):
-        return choice([self.attack(), self.hide(), self.run(), self.defend()])
+        return choice([self.attack(), self.run(), self.hide()], p=[0.33, 0.33, 0.34])
 
 
                 
