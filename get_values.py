@@ -14,6 +14,14 @@ class Get_Values:
 			for val in self.pull.pull_val("SELECT damage FROM player"):
 				return val
 
+	def get_gold(self):
+			for val in self.pull.pull_val("SELECT gold FROM player"):
+				return val
+				
+	def get_mana(self):
+			for val in self.pull.pull_val("SELECT mana FROM player"):
+				return val
+
 	def get_mon_stamina(self, monster_name):
 	    for val in self.pull.pull_val("SELECT stamina FROM monsters " + 
                                     "WHERE monster_name = '{}'".format(monster_name)):
@@ -26,4 +34,6 @@ class Get_Values:
 	def get_mon_health(self, monster_name):
 		for val in self.pull.pull_val("SELECT health FROM monsters " +
 										"WHERE monster_name = '{}'".format(monster_name)):
+				print(val)
 				return val
+		

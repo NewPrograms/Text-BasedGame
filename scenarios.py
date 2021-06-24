@@ -22,28 +22,74 @@ class Scenes:
         if self.conditions(self.monster) == True:
             self.second_act()
 
-
-
-    def second_act(self):
+    def diverging_of_path(self):
+        print("Gasp... Gasp... Luckily I made it out there! Now where should I go...")
         print(
-            "NC! Luckily I was able to ran away! Sigh...(Walks away)\n"
-            "Looks like I'm now at the end of this damn trees."
-            "(Sees temple...) What is that! Looks amazing!(Hears clanking noises)"
-            "Oh crap looks like I have to do this all over again."
-        )
+            "[1] A simple looking path to the left.\n",
+            "[2] The weird looking temple at the center.\n",
+            "[3] The twisted trees at the right.")
+        choose = input("Choose: ")
+        if self.choose == '1':
+            pass
+
+        elif self.choose == '2':
+            pass
+
+        elif self.choose == '3':
+            self.twisted_trees()
+
+    def twisted_trees(self):
+        print(
+            "(Sounds of crickets and howls) Are there wolves here?",
+            "Hopefully there isn't or I'm toast.... Damnnnn ittttt.",
+            "Why did I choose this path.(Hears clanking noises)",
+            "Damn it! Better get ready."
+ )
         self.monster = 'skeletons'
         if self.conditions(self.monster) == True:
-            self.third_act()
+            self.zombies_again()
         
         
         
         else: 
             self.third_act() # This is a temporary fix for a bug
 
-    def third_act(self):
-        print('lmao')
+    def zombies_again(self):
+        print(
+            "Sighhhh.... Luckily I survived...(Walks away)\n",
+            "Looks like I'm now at the end of this damn trees.",
+            "(Looks around) Damnnnnn Where am I?(Grrrrrr.....)",
+            "Oh crap looks like I have to do this all over again."
+            )
+        self.monster = 'zombies'
+        if self.conditions(self.monster) == True:
+            pass
         
+        
+        else: 
+            pass
 
+    def wolves(self):
+        print(
+            "This path looks easy as I thought it would be!\n",
+            "Looks like this would be a breeze!(Hears howls)",
+            "Wha-!(Wolves Enter) Mother-"
+            )
+        self.monster = 'wolves'
+        if self.conditions(self.monster) == True:
+            pass
+        
+        
+        else: 
+            pass
+    
+    def entering_temple(self):
+        print(
+            "This temple is sure looking old! Hmmm... better be ",
+            "Better be on the look out..."
+            "(Hears voice) Wha---\n\n (Merchant): Hey kid! You want some items?"
+            "Sure...."
+            )
     def conditions(self, monsters):
         # The cause of the bug is unkown but this is the possbile reason.
         self.combat = Combat(self.u_name, self.password, monsters)

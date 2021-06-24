@@ -1,17 +1,19 @@
 import time
 import sys
+from create import Pull
+from player import Player
 from monster import Monster
-from get_values import Get_Values
-from create import Create, Pull
 from numpy.random import choice
 from calc_poss import Calculate
+from get_values import Get_Values
 class Combat:
 
     def __init__(self, username, password, monster):
+        self.pull = Pull(username, password)
+        self.player = Player(username, password) 
+        self.get = Get_Values(username, password)
         self.monster = Monster(monster, username, password)
         self.calculate_poss = Calculate(username, password)
-        self.get = Get_Values(username, password)
-        self.pull = Pull(username, password) 
         
         self.monster_name = monster
     
@@ -21,7 +23,8 @@ class Combat:
             "[1] Attack!\n",
             "[2] Run!\n",
             "[3] Defend!\n",
-            "[4] Hide!\n"
+            "[4] Hide!\n",
+            "[5] Check Stats\n"
                 )
         return self.results()
 
@@ -31,38 +34,53 @@ class Combat:
 
 
         if chosen == "1":
-
-
-            if self.get.get_mon_stamina(self.monster) <= 10:
+            if self.get.get_mon_stamina(self.monster_name) <= 10:
                 print("The monster is tired!")
+                self.monster.monster_damaged(self.attack())
+                return True if self.monster.is_dead() else False
+
 
             else:
-                if self.mon.dodge(self.calculate_poss.mon_calc_dodg()) == 'Miss':
-                    self.player_losestamina()
-                    self.monster.loses_stamina()
-                    return False
+                if self.monster.dodge(self.calculate_poss.mon_calc_dodge(self.monster_name)) == 'Miss':
+                    print("The monster dodged successfully and you missed!")
+                    if self.monster.counter_attack(
+                        self.calculate_poss.mon_counterattack_chance(self.monster_name)
+                        ) == True:
+                       self.player.got_hit(
+                                    self.monster.attack(
+                                        self.calculate_poss.undeadmon_att_succ(self.monster_name)
+                                        )
+                       )
+                       self.player.loses_stamina()
+                       self.monster.loses_stamina()
+                       return False
+                        
+                    else:
+                        self.player.loses_stamina()
+                        self.monster.loses_stamina()
+                        return False
                 else:
-                    self.attack()
-                
+                    print("It hit!")
+                    self.monster.monster_damaged(self.attack())
+                    self.player.loses_stamina()
+                    self.monster.loses_stamina()
+                    return True if self.monster.is_dead() else False
 
             
         elif chosen == "2":
 
             if self.run() == "Successful":
                 print(" You have ran away!")
-                self.player_losestamina()
+                self.player.loses_stamina()
                 self.monster.loses_stamina()
                 return True
 
             else:
-                self.res = self.monster.attack(self.calculate_poss.undeadmon_att_succ(self.monster_name))
-                if self.res == 'Miss':
-                    print("It missed!")
-                    self.player_losestamina()
-                    self.monster.loses_stamina()
-                    return False
-                else:
-                    self.player_hit(self.res)
+                    self.player.got_hit(
+                                        self.monster.attack(
+                                        self.calculate_poss.undeadmon_att_succ(self.monster_name)
+                                        ))
+                    self.players.loses_stamina()
                     self.monster.loses_stamina()
                     return False
                     
@@ -71,11 +89,10 @@ class Combat:
             pass
 
         elif chosen == "4":
-            print("Nice Nice")
             self.result = self.hide()
             
             if self.result == 'Successful':
-                self.player_losestamina()
+                self.player.loses_stamina()
                 print("You hid succesfully!")
                 return True
             
@@ -85,14 +102,19 @@ class Combat:
             
             else:
                 print("the monster saw you and has now hit you!.")
-                self.player_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(self.monster_name))) 
+                self.player.got_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(self.monster_name))) 
                 self.monster.loses_stamina()
                 return False
+        
+        elif chosen == "5":
+            self.player.player_stats()
 
         
         else:
             print("Invalid Choice!")
             sys.exit()
+        
+            
         
 
 
@@ -114,9 +136,9 @@ class Combat:
 
     def attack(self):
         return choice(
-                    self.calculate_poss.calc_poss_damage(), 
-                    p=self.calculate_poss.hitting_chances(5, self.calculate_poss.calc_success)
-        )
+                    self.calculate_poss.get_possibilities(),
+                    p=self.calculate_poss.get_final_val()
+                    )
 
     def countdown(time_sec):
         while time_sec:
@@ -137,17 +159,4 @@ class Combat:
         return choice([self.attack(), self.hide(), self.run(), self.defend()])
 
 
-    def player_hit(self, res):
-        print("You got hit! -{} health points".format(res))
-        self.pull.update_values(
-            "player SET health = {} - {}".format(
-            self.get.get_health(),
-            res) 
-            )
-
-    def player_losestamina(self):
-        self.pull.update_values(
-            "player SET stamina = {} - 5".format(self.get.get_stamina())
-         )
-
-                                            
+                

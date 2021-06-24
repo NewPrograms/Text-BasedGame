@@ -1,4 +1,5 @@
 # Main file of the program where different parts of the app will be ran
+from re import A
 import sys
 import psycopg2
 from menu import Menu
@@ -34,7 +35,7 @@ class Main:
     def act(self):
         self.scenarios.starting_scene()
         self.scenarios.second_act()
-
+        
 if __name__ == '__main__':
     main = Main()
     main.__run__()

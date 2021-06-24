@@ -18,11 +18,35 @@ class Monster:
 			return choice(['Miss', 6, 7, 8, 9, 10], p=poss)
 			
 
-	def loses_stamina(self):
+	def loses_stamina(self): 
 			self.pull.update_values(
-            "monsters SET stamina = {} - 5 WHERE monster_name = '{}'"
-            .format(self.get.get_mon_stamina(self.monster), self.monster)
-            )
+			"monsters SET stamina = {} - 5 WHERE monster_name = '{}'"
+			.format(self.get.get_mon_stamina(self.monster), self.monster)
+			)
 
-	def mon_dodge(self, poss):
-		return choice(['Hit, Miss'], p=[poss, 1-poss] )
+	def dodge(self, poss):
+		return choice(['Hit', 'Miss'], p=[poss, 1-poss] )
+
+	def monster_damaged(self, damage):
+		print("The monster has been damaged {}".format(damage))
+		print(self.monster)
+		self.pull.update_values(
+			"monsters SET health = {} - {} WHERE monster_name = '{}'"
+			.format(self.get.get_mon_health(self.monster), damage, self.monster)
+		)
+
+	def counter_attack(self, poss):
+		print("The monster will now counter attack!")
+		return choice([True, False], p=[1-poss, poss]) 
+
+	def is_dead(self):
+		if self.get.get_mon_health(self.monster) <= 0:
+			print("The monster has died!")
+			return True
+
+		else:
+			print(
+				"The health of the monster is at {}"
+				.format(self.get.get_mon_health(self.monster))
+				)
+			return False
