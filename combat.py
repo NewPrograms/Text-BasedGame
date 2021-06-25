@@ -15,9 +15,6 @@ class Combat:
         self.get = Get_Values(username, password)
         self.monster = Monster(monster, username, password)
         self.calculate_poss = Calculate(username, password)
-        self.countdown = threading.Thread(target=self.countdown(), args=(1,))
-        self.countdown.start()
-        
         self.monster_name = monster
     
     def options(self):
@@ -114,9 +111,7 @@ class Combat:
         
         else:
             print("Invalid Choice!")
-            sys.exit()
-        
-            
+            sys.exit() 
         
 
 

@@ -1,13 +1,14 @@
 # This is the part where all scenarios are typed our or played out.
 from combat import Combat
-
+from merchant import Merchant
 class Scenes:
 
 
     def __init__(self, u_name, password):
-       self.u_name = u_name
-       self.password = password
-            
+        self.u_name = u_name
+        self.password = password
+        self.merchant = Merchant(self.u_name, self.password)
+
     def starting_scene(self):
         print(
             "Huff! Huff! Those zombies are everywhere! I don't know if I can escape\nn",
@@ -20,7 +21,7 @@ class Scenes:
             )
         self.monster = 'zombies'
         if self.conditions(self.monster) == True:
-            self.second_act()
+            self.diverging_of_path()
 
     def diverging_of_path(self):
         print("Gasp... Gasp... Luckily I made it out there! Now where should I go...")
@@ -28,12 +29,12 @@ class Scenes:
             "[1] A simple looking path to the left.\n",
             "[2] The weird looking temple at the center.\n",
             "[3] The twisted trees at the right.")
-        choose = input("Choose: ")
+        self.choose = input("Choose: ")
         if self.choose == '1':
-            pass
+            self.wolves
 
         elif self.choose == '2':
-            pass
+            self.entering_temple()
 
         elif self.choose == '3':
             self.twisted_trees()
@@ -90,6 +91,9 @@ class Scenes:
             "(Hears voice) Wha---\n\n (Merchant): Hey kid! You want some items?"
             "Sure...."
             )
+        
+        self.merchant.show_items()
+
     def conditions(self, monsters):
         # The cause of the bug is unkown but this is the possbile reason.
         self.combat = Combat(self.u_name, self.password, monsters)

@@ -34,9 +34,8 @@ class Main:
         
     def act(self):
         self.scenarios.starting_scene()
-        self.scenarios.second_act()
         
 if __name__ == '__main__':
     main = Main()
     main.__run__()
-    
+ 
