@@ -74,7 +74,7 @@ class User():
 				'quantity int NOT NULL, durability int NOT NULL, selling_price int NOT NULL, '
 		}
 
-trigger_functions = {
+		trigger_functions = {
 				"transaction(quant int, name_of_item varchar(100))":
 				"RETURNS text AS $$\nDECLARE\ntotal_price int;\nprice_used int;\nplayer_gold int;\n"+
 				"dam int;\nquant_of_prod int;\nname varchar(100);\ndur int;\nprice int;\nsell int;"+
@@ -86,9 +86,8 @@ trigger_functions = {
 				"UPDATE merchant_storage SET quantity = quant_of_prod - quant WHERE item_name = name_of_item;\n" +
 				"INSERT INTO storage(item_name, quantity, damage, durability, selling_price)"
 				"VALUES(name, quant, dam, dur, sell);\nRETURN 'SUCCESSFUL!';\nEND IF;\nEND;\n$$ LANGUAGE 'plpgsql';'",
-
-
 }
+
 	def auth(self):
 		""" This used in order to autheticate the user while also registering it if not registered yet"""
 		if ';' in self.acc_u_name:
@@ -135,6 +134,3 @@ trigger_functions = {
 
 
 
-
-
-		 
