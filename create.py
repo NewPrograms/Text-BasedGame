@@ -78,9 +78,7 @@ class Create:
         for key, val in statement.items():
            for it_val in val:
             self.cur.execute(
-                           "CREATE FUNCTION {} RETURNS trigger AS {}\n"+
-                           "BEGIN\n" + "{}" + "END;" + "{} LANGUAGE plpgsql".format(key, f"${key}_func", 
-                           it_val, f"${key}_func")
+                           "{}"
                            )
                            
         self.cur.close()

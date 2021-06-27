@@ -1,10 +1,12 @@
+from get_values import Get_Values
 from create import Pull, Create
-
+from get_values import Get_Values
 class Merchant:
 
 	def __init__(self,username, password):
 		self.create = Create(username, password)
 		self.pull = Pull(username, password)
+		self.get = Get_Values(username, password)
 		self.items = []
 	def get_storage(self):
 		return [list(val) for val in self.pull.pull_table("SELECT * FROM merchant_storage;")]
@@ -73,8 +75,11 @@ class Merchant:
 											  self.how_many() )
 			question = input("Are you sure?(y/n)")
 			if question.lower() == 'y':
-				self.decrease_money(self.res)
-				self.give_items(self.item)	
+				if self.decrease_money(self.res) == True:
+					self.give_items(self.item, self.purchase_price)
+				else:
+					print("Try again!")
+					self.buy_items()	
 			else:
 				pass
 		else: 
@@ -84,31 +89,32 @@ class Merchant:
 		self.to_buy  = input("Choose what you want to buy(Type letter): ")
 
 		if self.to_buy.lower().strip("_") == 'normal sword':
-			return self.more_info()[0][0].strip('_'), self.more_info[0][4]
+			return self.item_info()[0][0].strip('_'), self.item_info()[0][4]
 		
 		elif self.to_buy.lower() == 'shield':
-			return self.more_info()[1][0], self.more_info[1][4]
+			return self.item_info()[1][0], self.item_info[1][4]
 		
 		elif self.to_buy.lower() == 'dagger':
-			return self.more_info()[2][0], self.more_info[2][4]
+			return self.item_info()[2][0], self.item_info[2][4]
 		
 		else:
 			return "Error! There is a mistake in what you typed"
 
 	def decrease_money(self, gold_used):
-		if self.pull.pull_val("SELECT gold FROM player;") - gold_used < 0:
+		if self.get.get_gold() - gold_used < 0:
 			print("Money is not enough!")
+			return False
 		
 		else:
 			self.pull.update_values(
 				"player SET gold = {} - {} "
-				.format(self.pull.pull_val("SELECT gold FROM player;"), gold_used)
+				.format(self.get.get_gold(), gold_used)
 				)
+			return True
 
 	def how_many(self):
-		self.how_many = int(input("How many do you want to buy?"))
-		return self.how_many
-		
+		return int(input("How many do you want to buy?"))
+	
 		
 
 	def calculate_howmuch(self, purchasing_price, quantity):
@@ -116,28 +122,13 @@ class Merchant:
 		print("The price will be {} gold".format(purchasing_price * quantity))
 		return purchasing_price * quantity
 
-	def give_items(self, item_ordered):
-		if item_ordered == 'normal sword':
+	def give_items(self, item_ordered, quantity):
+		
 			self.create.input_val({
-					'items': [
-					'item_name, damage, durability, selling_price',
-					'VALUES({}, {}, {}, {}, {})'.format("'normal_sword'", 20, 50, 10)]
-			}   
-			)
-		elif item_ordered == 'shield':
-			self.create.input_val({
-					'items': [
-					'item_name, damage, durability, selling_price',
-					'VALUES({}, {}, {}, {}, {})'.format("'shield'", 0, 100, 20),   
-					]
-			}   
-			)
-
-		else:
-			self.create.input_val({
-					'items': [
-					'item_name, damage, durability, selling_price',
-					'VALUES({}, {}, {}, {}, {})'.format("'dagger'", 10, 60, 5)   
+					'storage': [
+					"item_name,quantity, damage, durability, selling_price",
+					" SELECT item_name, {}, damage, durability, selling_price".format(quantity) +
+					" FROM items WHERE item_name = '{}'".format(item_ordered)
 					]
 			}   
 			)

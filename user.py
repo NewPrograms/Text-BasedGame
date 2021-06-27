@@ -74,6 +74,21 @@ class User():
 				'quantity int NOT NULL, durability int NOT NULL, selling_price int NOT NULL, '
 		}
 
+trigger_functions = {
+				"transaction(quant int, name_of_item varchar(100))":
+				"RETURNS text AS $$\nDECLARE\ntotal_price int;\nprice_used int;\nplayer_gold int;\n"+
+				"dam int;\nquant_of_prod int;\nname varchar(100);\ndur int;\nprice int;\nsell int;"+
+				"BEGIN\nSELECT quantity into quant_of_prod FROM merchant_storage; " +
+				"SELECT gold into player_gold FROM player;\n"
+				"SELECT * into name, dam, dur, sell, price FROM items WHERE item_name = name_of_item;\n" +
+				"total_price := quant * price;\nprice_used := player_gold - total_price;\n "
+				"if price_used <0 THEN\nRETURN 'FAIL LACKS GOLD!';\nELSE\nUPDATE player SET gold = price_used;\n"+
+				"UPDATE merchant_storage SET quantity = quant_of_prod - quant WHERE item_name = name_of_item;\n" +
+				"INSERT INTO storage(item_name, quantity, damage, durability, selling_price)"
+				"VALUES(name, quant, dam, dur, sell);\nRETURN 'SUCCESSFUL!';\nEND IF;\nEND;\n$$ LANGUAGE 'plpgsql';'",
+
+
+}
 	def auth(self):
 		""" This used in order to autheticate the user while also registering it if not registered yet"""
 		if ';' in self.acc_u_name:

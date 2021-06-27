@@ -92,7 +92,7 @@ class Scenes:
             "Sure...."
             )
         
-        self.merchant.show_items()
+        self.merchant.buy_items()
 
     def conditions(self, monsters):
         # The cause of the bug is unkown but this is the possbile reason.

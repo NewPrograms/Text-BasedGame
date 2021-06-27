@@ -14,7 +14,6 @@ class Main:
         self.p_word = input("Add a password: ")
         self.scenarios = Scenes(self.u_name, self.p_word)
         self.user = User(self.u_name, self.p_word)
-
         # Other values
 
         self.has_logged_in = False
