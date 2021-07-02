@@ -20,7 +20,7 @@ class Scenes:
             " and have been hunting me ever since.", "Damn it! How can I escape this! "
             )
         self.monster = 'zombies'
-        if self.conditions(self.monster) == True:
+        if self.conditions(self.monster) is True:
             self.diverging_of_path()
 
     def diverging_of_path(self):
@@ -47,14 +47,9 @@ class Scenes:
             "Damn it! Better get ready."
  )
         self.monster = 'skeletons'
-        if self.conditions(self.monster) == True:
+        if self.conditions(self.monster) is True:
             self.zombies_again()
         
-        
-        
-        else: 
-            self.third_act() # This is a temporary fix for a bug
-
     def zombies_again(self):
         print(
             "Sighhhh.... Luckily I survived...(Walks away)\n",
@@ -63,12 +58,9 @@ class Scenes:
             "Oh crap looks like I have to do this all over again."
             )
         self.monster = 'zombies'
-        if self.conditions(self.monster) == True:
-            pass
+        if self.conditions(self.monster) is True:
+            self.end()
         
-        
-        else: 
-            pass
 
     def wolves(self):
         print(
@@ -77,12 +69,10 @@ class Scenes:
             "Wha-!(Wolves Enter) Mother-"
             )
         self.monster = 'wolves'
-        if self.conditions(self.monster) == True:
-            pass
+        if self.conditions(self.monster) is True:
+            self.end()
         
-        
-        else: 
-            pass
+    
     
     def entering_temple(self):
         print(
@@ -92,15 +82,21 @@ class Scenes:
             "Sure...."
             )
         
-        self.merchant.buy_items()
-
+        if self.merchant.menu() is True:
+            self.end()
+        
+        else:
+            self.merchant.menu()
     def conditions(self, monsters):
         # The cause of the bug is unkown but this is the possbile reason.
         self.combat = Combat(self.u_name, self.password, monsters)
-        if self.combat.options() == True:
+        if self.combat.options() is True:
             return True
 
 
         else:
             self.conditions(self.monster)
 
+    def end(self):
+        # This is the end of the game.
+        print("I made it out! Damn what should I do next....")

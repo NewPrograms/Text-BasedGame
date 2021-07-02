@@ -76,10 +76,10 @@ class Create:
                                      password=f'{self.acc_p_word}', host='127.0.0.1' )
         self.cur = self.conn.cursor()
         for key, val in statement.items():
-           for it_val in val:
             self.cur.execute(
-                           "{}"
+                           "CREATE OR REPLACE FUNCTION {} {}".format(key, val)
                            )
+            self.conn.commit()
                            
         self.cur.close()
         self.conn.close()
@@ -125,6 +125,7 @@ class Pull:
                                           password=f'{self.acc_p_word}', host='127.0.0.1' )
         self.cur = self.conn.cursor()
         self.cur.execute("{}".format(statement))
+        self.conn.commit()
         self.values = self.cur.fetchall()
         self.cur.close()
         self.conn.close()

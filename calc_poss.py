@@ -13,22 +13,26 @@ class Calculate:
 
     def calc_success(self):
         # Pull values from the player table and calculate the
-        return (self.get.get_health()/100 + self.get.get_stamina()/100)/3
+        # Get the health and stamina of the player
+        return (self.get.get_playerstats()[1]/100 + self.get.player_stats()[2]/100)/3
 
     def calc_fail(self):
         return abs(1 - self.calc_success())
 
     def calc_poss_damage(self, n, damage):
+        # Get the damage of the player
+        # Using Recursion subtract the stats if the player by 4
+        # which is then appended to possible_damage
         if n == damage:
             self.possible_damage.append(damage)
             return damage
         else:
-            self.res =self.get.get_damage() - 4 + self.calc_poss_damage(n-1, damage)
+            self.res =self.get.get_playerstats()[3] - 4 + self.calc_poss_damage(n-1, damage)
             self.possible_damage.append(self.res)
             return self.res  
 
     def get_possibilities(self):
-        self.calc_poss_damage(self.get.get_damage(), self.get.get_damage()-4)
+        self.calc_poss_damage(self.get.get_playerstats()[3], self.get.get_playerstats()[3]-4)
         return self.possible_damage
 
     def calc_hitting_chance(self, n, val):
@@ -55,9 +59,9 @@ class Calculate:
         else:
             self.ans = (
                         (
-                        self.get.get_mon_stamina(monster)/100
-                         + self.get.get_mon_speed(monster)/100
-                         + self.get.get_mon_health(monster)/100)/7
+                        self.get.get_monster_stats(monster)[2]/100
+                         + self.get.get_monster_stats(monster)[3]/100
+                         + self.get.get_monster_stats(monster)[1]/100)/7
                          )
             self.total.append(self.ans)
             self.division(5, self.ans)
@@ -83,11 +87,11 @@ class Calculate:
             self.total.append(1-sum(self.total))
         
     def calculate_stamina_consumed(self):
-        return ((100/self.get.get_stamina())*0.9)+3
+        return ((100/self.get.get_playerstats()[2])*0.9)+3
 
 
     def mon_calc_dodge(self, monster):
-        return (self.get.get_mon_speed(monster)/100 + self.get.get_mon_stamina(monster)/100)/3
+        return (self.get.get_monster_stats(monster)[3]/100 + self.get.get_monster_stats(monster)[2]/100)/3
 
     def mon_counterattack_chance(self, monster):
-        return (self.get.get_mon_speed(monster)/100 + self.get.get_mon_stamina(monster)/100)/7
+        return (self.get.get_monster_stats(monster)[3]/100 + self.get.get_monster_stats(monster)[2]/100)/7

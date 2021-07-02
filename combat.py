@@ -29,11 +29,10 @@ class Combat:
         return self.results()
 
     def results(self):
-
         chosen = input("Choose: ")
 
         if chosen == "1":
-            if self.get.get_mon_stamina(self.monster_name) <= 10:
+            if self.get.get_monster_stats()[0][2] <= 10:
                 print("The monster is tired!")
                 self.monster.monster_damaged(self.attack())
                 return True if self.monster.is_dead() else False
@@ -44,7 +43,7 @@ class Combat:
                     print("The monster dodged successfully and you missed!")
                     if self.monster.counter_attack(
                         self.calculate_poss.mon_counterattack_chance(self.monster_name)
-                        ) == True:
+                        ) is True:
                        self.player.got_hit(
                                     self.monster.attack(
                                         self.calculate_poss.undeadmon_att_succ(self.monster_name)
@@ -101,7 +100,7 @@ class Combat:
             
             else:
                 print("the monster saw you and has now hit you!.")
-                self.player.got_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(self.monster_name))) 
+                self.player.got_hit(self.monster.attack(self.monster_name))
                 self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
                 return False
         
@@ -116,10 +115,8 @@ class Combat:
 
 
     def run(self):
-        
         # Get the value from calc_success
         # and calculate it to get the weights of choices
-        print(self.calculate_poss.calc_success(), abs(self.calculate_poss.calc_fail()))
         return choice(
                 ['Successful', 'You got hit!'], 
                 p=[abs(self.calculate_poss.calc_success()), abs(self.calculate_poss.calc_fail())]
