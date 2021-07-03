@@ -83,8 +83,26 @@ class Combat:
                     return False
                     
         elif chosen == "3":
-
-            pass
+            # Make a function that blocks the enemies attacks.
+            # IF shield IN storage
+                # Defend()
+            if 'shield' in self.get.get_storage():
+                if self.is_defended() is True:
+                    self.player.loses_stamina
+                    self.monster.loses_stamina()
+                else:
+                    # Call self.player.got_hit()
+                    # Call self.player.loses_stamina()
+                    # Call self.monster.loses_stamina()
+                pass
+            else: 
+                print("You can't! You don't have a shield yet!")
+            # Call player_loses_stamina
+                self.player.loses_stamina()
+            # Call player_loses_health
+                self.player.got_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(self.monster_name)))
+            # Call monster loses stamina
+                self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
 
         elif chosen == "4":
             self.result = self.hide()
@@ -134,6 +152,16 @@ class Combat:
                     p=self.calculate_poss.get_final_val()
                     )
 
+    # DEFINE DEFEND
+    def defend(self):
+        # This is a function that allows the player to defend
+        if self.is_defended is True:
+            print('Defended!')
+            
+            # Call losing_durability
+        # ElSE
+            # PRINT('He hit you!')
+            # Call functin losing health, stamina, and monster_stamina
     def countdown(self):
         global time_sec
         time_sec = 5
@@ -153,6 +181,10 @@ class Combat:
 
     def random_choice(self):
         return choice([self.attack(), self.run(), self.hide()], p=[0.33, 0.33, 0.34])
-
-
+    
+    
                 
+    def is_defended(self):
+        # This is for the chances of defending an attack
+        total =  self.calculate_poss.calc_success +  0.1 
+        return choice([True, False], p=[total, abs(1-total)])

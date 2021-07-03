@@ -27,7 +27,7 @@ class Player:
 		print(
 			"Health:{}\nStamina:{}\nDamage:{}\nGold:{}\nMana:{}\n"
 			.format(
-				self.get.get_health(), self.get.get_stamina(), self.get.get_damage()
+				self.get.get_health, self.get.get_stamina(), self.get.get_damage()
 				, self.get.get_gold(), self.get.get_mana()
 				)
 			)

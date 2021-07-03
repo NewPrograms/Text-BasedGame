@@ -12,6 +12,3 @@ class Get_Values:
 		
 	def get_storage(self):
 		return [list(val) for val in self.pull.pull_table("SELECT * FROM merchant_storage;")]
-
-	def item_info(self):
-		return [list(val) for val in self.pull.pull_table("SELECT * FROM items;")]
