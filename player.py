@@ -3,14 +3,22 @@ from get_values import Get_Values
 class Player:
 
 	def __init__(self, username, password):
+		# Define player_stats
+		self.name = username
+		self.health = 0
+		self.damage = 0
+		self.gold = 0 
+		self.mana = 0
+		self.stamina = 0
 		self.get = Get_Values(username, password)
 		self.pull = Pull(username, password)
 		
 
-	
+# All of the values below will be put in player_actions	
 	def got_hit(self, res):
 		if res == 'Miss':
 			print("It missed!")
+
 		else:
 			print("You got hit! -{} health points".format(res))
 			self.pull.update_values(

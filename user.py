@@ -2,19 +2,20 @@ import psycopg2
 from create import Create, Pull
 class User():
 	# This is the user class
-	def __init__(self, u_name, p_word):
-		self.acc_u_name = u_name
-
-		self.acc_p_word = p_word
+	def __init__(self, username = "postgres", password = "1"):
+		self.username = username
+		self.password = password
 
 		self.active = True
+# Remove because the User will be inherited by Create, Pull, Del
+# As part of the priveleges.
 
-		self.create = Create(self.acc_u_name, self.acc_p_word)
 
+# Remove and put to items, merchant_storage, player, monster, and merchant.
 		self.to_input = {
 			'player':[
 				'player_name, health, stamina, damage, gold, mana', 
-				'VALUES ({}, {}, {}, {}, {}, {})'.format(f"'{self.acc_u_name}'", 50, 60, 70, 80, 0)
+				'VALUES ({}, {}, {}, {}, {}, {})'.format(f"'{self.username}'", 50, 60, 70, 80, 0)
 			],
 			'monsters': [
 				'monster_name, health, stamina, speed, damage, gold_drop, mana',
@@ -40,116 +41,5 @@ class User():
 			],
 			}
 
-		self.to_create = {
-			"player":
-				'player_name varchar(50) PRIMARY KEY NOT NULL,'+
-				'health int NOT NULL, stamina int NOT NULL,'+ 
-				'damage int NOT NULL, gold int NOT NULL, mana int NOT NULL'
-			,
-
-			"items":
-				'item_name varchar(100) PRIMARY KEY NOT NULL,' +
-				'damage int NOT NULL, durability int NOT NULL,' +
-				'selling_price int NOT NULL, purchasing_price int NOT NULL'
-			,
-
-			"monsters": 
-				'monster_name varchar(50) PRIMARY KEY NOT NULL,' +
-				'health int NOT NULL, stamina int NOT NULL, damage int NOT NULL, mana int NOT NULL,' +
-				'speed int NOT NULL, gold_drop int NOT NULL' 
-			,
-
-			"merchant":
-				'merchant_id varchar(100) PRIMARY KEY NOT NULL, merchant_name varchar(50) NOT NULL,' +
-				'merchant_location varchar(150) NOT NULL'
-			,
-
-			"merchant_storage":  
-				'merchant_id varchar(50) NOT NULL references merchant(merchant_id),' +
-				'item_name varchar(100) NOT NULL references items(item_name), quantity int NOT NULL'
-			,
-
-			"storage":
-				'item_name varchar(100) NOT NULL references items(item_name), damage int NOT NULL,'+
-				'quantity int NOT NULL, durability int NOT NULL, selling_price int NOT NULL '
-		}
-
-		self.trigger_functions = {
-				"transaction(quant int, name_of_item varchar(100))":
-				"RETURNS text AS $$\nDECLARE\ntotal_price int;\nprice_used int;\nplayer_gold int;\n"+
-				"dam int;\nquant_of_prod int;\nname varchar(100);\ndur int;\nprice int;\nsell int;"+
-				"BEGIN\nSELECT quantity into quant_of_prod FROM merchant_storage; " +
-				"SELECT gold into player_gold FROM player;\n"+
-				"SELECT * into name, dam, dur, sell, price FROM items WHERE item_name = name_of_item;\n" +
-				"total_price := quant * price;\nprice_used := player_gold - total_price;\n "
-				"IF quant < 0 THEN\nRAISE EXCEPTION USING MESSAGE = \"NEGATIVE VALUES ARE NOT ALLOWED\";"
-				"ELSIF quant_of_prod IS NULL THEN\nRAISE EXCEPTION USING MESSAGE = \"MISPELLED NAME OR DOESN'T EXIST!\";\n"
-				"ELSIF price_used <0 THEN\nRETURN 'FAIL LACKS GOLD!';\nELSE\nUPDATE player SET gold = price_used;\n"+
-				"UPDATE merchant_storage SET quantity = quant_of_prod - quant WHERE item_name = name_of_item;\n" +
-				"INSERT INTO storage(item_name, quantity, damage, durability, selling_price)"+
-				"VALUES(name, quant, dam, dur, sell);\nRETURN 'SUCCESSFUL!';\nEND IF;\nEND;\n$$ LANGUAGE \'plpgsql\';",
-
-				"only_one()":
-				"RETURNS TRIGGER AS $$\nBEGIN\nIF NEW.QUANTITY > 1 THEN\n"+
-				"RAISE EXCEPTION USING MESSAGE = 'ONLY ONE QUANTITY OF WEAPONRY IS ALLOWED!';\n"+
-				"END IF;\nRETURN NEW;\nEND;\n$$ LANGUAGE 'plpgsql';\n",
-
-				"removing_item()":
-				"RETURNS TRIGGER AS $$\nDECLARE\nprev_damage int;\ni record;\nBEGIN\nSELECT damage into prev_damage FROM player;\n"+
-				"UPDATE player SET damage = prev_damage - OLD.damage;\n"
-				"RETURN OLD;\nEND;\n$$ LANGUAGE 'plpgsql';\n",
-
-				"get_total_damage()":
-				"RETURNS TRIGGER AS $$\nDECLARE \ntotal_damage int;\n"+
-				"BEGIN\nSELECT damage into total_damage FROM player;\n"+                                                                                                                                                                                                                                                                                                                                                                                                                                
-				"UPDATE player SET damage = total_damage + NEW.DAMAGE;\n"+
-				"RETURN NEW;\nEND;\n$$ LANGUAGE 'plpgsql';"
-}
-
-	def auth(self):
-		""" This used in order to autheticate the user while also registering it if not registered yet"""
-		if ';' in self.acc_u_name:
-			print("\n\nNo semicolons allowed!")
-			self.active = False
-		else:
-
-			try:
-
-				self.conn = psycopg2.connect(dbname=f"{self.acc_u_name}_passwords", user=f"{self.acc_u_name}",
-						password=f"{self.acc_p_word}", host="127.0.0.1")
-
-				self.cur = self.conn.cursor()
-
-				self.cur.execute(f"SELECT * FROM passwords;")
-
-				self.cur.fetchone()
-				
-				self.cur.close()
-				
-				self.conn.close()
-				
-				return True
-			
-
-			except:
-
-				print("damn")
-
-				self.create.create_user()
-
-				self.create.create_db()
-
-				self.create.create_table(self.to_create)
-				self.create.create_function(self.trigger_functions)
-
-				self.create.input_val(self.to_input)
-
-				print("We've already registered you")
-
-				return False
-
-
-
-
-
-
+# Also remove this.
+ 

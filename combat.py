@@ -94,7 +94,8 @@ class Combat:
                     # Call self.player.got_hit()
                     # Call self.player.loses_stamina()
                     # Call self.monster.loses_stamina()
-                pass
+                    pass
+
             else: 
                 print("You can't! You don't have a shield yet!")
             # Call player_loses_stamina

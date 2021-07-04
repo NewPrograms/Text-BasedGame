@@ -1,5 +1,4 @@
 import psycopg2
-from psycopg2 import extensions
 import time
 class Create:
      
@@ -7,82 +6,7 @@ class Create:
         self.acc_u_name = username
         self.acc_p_word = password
      
-     def create_user(self):
-        conn = psycopg2.connect(dbname="postgres", user="postgres", password="12", host="127.0.0.1")
-        cur = conn.cursor()
-        cur.execute(f"CREATE USER {self.acc_u_name} WITH PASSWORD '{self.acc_p_word}'")
-        conn.commit()
 
-        cur.close()
-        conn.close()
-
-     def create_db(self):
-
-            auto_commit = extensions.ISOLATION_LEVEL_AUTOCOMMIT
-            self.conn = psycopg2.connect(dbname='postgres', user='postgres', 
-                                        password=f'12', host='127.0.0.1' )
-            self.conn.set_isolation_level(auto_commit)
-            self.cur = self.conn.cursor()
-            self.cur.execute(f'ALTER ROLE {self.acc_u_name} CREATEDB')
-            self.cur.execute(f'CREATE DATABASE {self.acc_u_name}_game')
-            self.cur.execute('ALTER DATABASE {}_game OWNER TO {}'.format(self.acc_u_name, self.acc_u_name))
-            self.cur.close()
-            self.conn.close()
-
-     def create_table(self, statements):
-
-        self.conn = psycopg2.connect(dbname=f'{self.acc_u_name}_game', user=f'{self.acc_u_name}', 
-                                     password=f'{self.acc_p_word}', host='127.0.0.1' )
-
-        self.cur = self.conn.cursor()
-
-        for key, val in statements.items():
-
-            self.cur.execute("CREATE TABLE {} ({})".format(key, val))
-
-        self.conn.commit()
-
-        self.cur.close()
-
-        self.conn.close()
-
-        print("Database Made!")
-
-     def input_val(self, statements):
-
-        self.conn = psycopg2.connect(dbname=f'{self.acc_u_name}_game', user=f'{self.acc_u_name}', 
-                                     password=f'{self.acc_p_word}', host='127.0.0.1' )
-
-        self.cur = self.conn.cursor()
-        # This is where various values are added on to the code.
-      
-        for key, val in statements.items():
-           for num in range(0,len(val)-1):
-               if len(val) > 1:
-                  self.cur.execute("INSERT INTO {}({}) {}".format(key, val[0], val[num+1]))
-
-               else:
-                  self.cur.execute("INSERT INTO {}({}) {}".format(key, val[0], val[1]))
-
-        self.conn.commit()
-        self.cur.close()
-        self.conn.close()
-
-     def create_trigger(self):
-         pass
-
-     def create_function(self, statement):
-        self.conn = psycopg2.connect(dbname=f'{self.acc_u_name}_game', user=f'{self.acc_u_name}', 
-                                     password=f'{self.acc_p_word}', host='127.0.0.1' )
-        self.cur = self.conn.cursor()
-        for key, val in statement.items():
-            self.cur.execute(
-                           "CREATE OR REPLACE FUNCTION {} {}".format(key, val)
-                           )
-            self.conn.commit()
-                           
-        self.cur.close()
-        self.conn.close()
 
 
 
@@ -117,6 +41,7 @@ class Delete:
 class Pull:
 
     def __init__(self, u_name, p_word):
+       
          self.acc_u_name = u_name
          self.acc_p_word = p_word
 
