@@ -1,20 +1,18 @@
 from get_values import Get_Values
 from operator import itemgetter
-from create import Pull
 
 class Calculate:
 
     def __init__(self, username, password):
-        self.pull = Pull(username, password)
         self.get = Get_Values(username, password)
         self.total = []
         self.possible_damage = []
         self.hitting_chances = []
 
-    def calc_success(self):
+    def calc_success(self, health, stamina):
         # Pull values from the player table and calculate the
         # Get the health and stamina of the player
-        return (self.get.get_playerstats()[1]/100 + self.get.player_stats()[2]/100)/3
+        return (health/100 + stamina/100)/3
 
     def calc_fail(self):
         return abs(1 - self.calc_success())
@@ -31,8 +29,12 @@ class Calculate:
             self.possible_damage.append(self.res)
             return self.res  
 
-    def get_possibilities(self):
-        self.calc_poss_damage(self.get.get_playerstats()[3], self.get.get_playerstats()[3]-4)
+    def get_possibilities(self, damage):
+        # This function is to get the damage range
+        # This works by adding the original damage in the first argument
+        # of calc_poss_damage then putting subratracting damage in the left side to
+        # add the range up until it will return the original damage.
+        self.calc_poss_damage(damage, damage-4)
         return self.possible_damage
 
     def calc_hitting_chance(self, n, val):
@@ -79,9 +81,14 @@ class Calculate:
             return self.ans
 
     def get_final_val(self):
+        # If the sum of the self.total < 1
+        # the sum of is the appended to total.
         if sum(self.total) >= 1:
             self.total.append(1-sum(self.total))
         
+        # If it is greater than the absolute value
+        # will then be subtracted by 0.1 
+        # Up until  it becomes lesser than 1.
         else: 
             self.total = [abs(x - 0.1) for x in self.total]
             self.total.append(1-sum(self.total))

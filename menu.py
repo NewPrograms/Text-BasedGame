@@ -3,10 +3,12 @@
 import sys
 import time
 import read_lines
+from pull import Pull
 class Menu:
 
-    def __init__(self):
+    def __init__(self, username, password):
         self.start_game = False
+        self.pull = Pull(username, password)
     def start_menu(self):
         """
             This will act as the start menu of the program
@@ -31,13 +33,13 @@ class Menu:
         chosen = input("Choose: ")
 
         if chosen == '1':
-            self.start_game = True
-            
+           return True  
         elif chosen == '2':
             read_lines.read_lines('instructions.txt')
 
         elif chosen == '3':
-            sys.exit
+            print(self.pull.pull_val("SELECT gold FROM player;"))
+            sys.exit()
  
         else:
             print("Invalid Command! ")

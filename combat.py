@@ -1,16 +1,13 @@
 import time
 import sys
 import threading
-from create import Pull
-from player import Player
+from pull import Pull
 from monster import Monster
-from numpy.random import choice, random
 from calc_poss import Calculate
 from get_values import Get_Values
 class Combat:
 
     def __init__(self, username, password, monster):
-        self.pull = Pull(username, password)
         self.player = Player(username, password) 
         self.get = Get_Values(username, password)
         self.monster = Monster(monster, username, password)
@@ -133,36 +130,6 @@ class Combat:
         
 
 
-    def run(self):
-        # Get the value from calc_success
-        # and calculate it to get the weights of choices
-        return choice(
-                ['Successful', 'You got hit!'], 
-                p=[abs(self.calculate_poss.calc_success()), abs(self.calculate_poss.calc_fail())]
-                )
-
-    def hide(self):
-           return choice(
-                        ['Successful', 'The creature saw you!', 'The creature saw you and pounced at you!'], 
-                        p=[0.2, 0.5, 0.3]
-                        )
-
-    def attack(self):
-        return choice(
-                    self.calculate_poss.get_possibilities(),
-                    p=self.calculate_poss.get_final_val()
-                    )
-
-    # DEFINE DEFEND
-    def defend(self):
-        # This is a function that allows the player to defend
-        if self.is_defended is True:
-            print('Defended!')
-            
-            # Call losing_durability
-        # ElSE
-            # PRINT('He hit you!')
-            # Call functin losing health, stamina, and monster_stamina
     def countdown(self):
         global time_sec
         time_sec = 5

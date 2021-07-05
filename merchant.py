@@ -1,6 +1,5 @@
 from sys import excepthook
 from get_values import Get_Values
-from create import Pull, Create
 from get_values import Get_Values
 import psycopg2
 class Merchant:

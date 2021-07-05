@@ -1,21 +1,21 @@
 # This class sets up the game.
 import psycopg2
+from define_values import to_input, trigger_functions, to_create
 from psycopg2 import extensions
 class Setup():
 	
 	# Make setup inherit Authenticate
 	def __init__(self, username, password):
-		self.setting_up()
 		self.acc_u_name = username
 		self.acc_p_word = password
 	
-	def setting_up(self, username, password):
+	def setting_up(self):
 		# This packages all functions into one function
 
 		self.create_db()
-		self.create_table()
-		self.create_trigger()
-		self.create_function()
+		self.create_table(to_create)
+		self.create_trigger(trigger_functions)
+		self.create_function(to_input)
 
 
 	def create_db(self):
@@ -33,6 +33,14 @@ class Setup():
 
 	def create_table(self, statements):
 		# Creates table
+		# Inputs all values
+		self.conn = psycopg2.connect(dbname=f'{self.acc_u_name}_game', user=f'{self.acc_u_name}', 
+									 password=f'{self.acc_p_word}', host='127.0.0.1' )
+
+		self.cur = self.conn.cursor()
+
+		self.cur.execute("CREATE TABLE {}({})".format(statements))
+
 		self.conn.commit()
 
 		self.cur.close()
