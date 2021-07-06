@@ -22,7 +22,6 @@ class Menu:
             "[3]Exit\n"
             )
 
-        self.choose()
 
     def choose(self):
 

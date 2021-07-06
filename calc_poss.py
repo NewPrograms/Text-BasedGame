@@ -1,10 +1,8 @@
-from get_values import Get_Values
 from operator import itemgetter
 
 class Calculate:
 
-    def __init__(self, username, password):
-        self.get = Get_Values(username, password)
+    def __init__(self):
         self.total = []
         self.possible_damage = []
         self.hitting_chances = []
@@ -25,7 +23,7 @@ class Calculate:
             self.possible_damage.append(damage)
             return damage
         else:
-            self.res =self.get.get_playerstats()[3] - 4 + self.calc_poss_damage(n-1, damage)
+            self.res = damage - 4 + self.calc_poss_damage(n-1, damage)
             self.possible_damage.append(self.res)
             return self.res  
 
@@ -53,17 +51,14 @@ class Calculate:
             self.calc_hitting_chance(5, self.calc_success())
             self.hitting_chances.append(1-sum(self.hitting_chances))
             return self.hitting_chances.sort(reverse=True)
-    def undeadmon_att_succ(self, monster):
+    def undeadmon_att_succ(self, mon_health, mon_speed, mon_stamina):
         # This is for zombie and skeleton who are undead!
         if len(self.total) >= 6:
             for i in range(0, len(self.total)-1):
                 self.total.remove(self.total[i])
         else:
             self.ans = (
-                        (
-                        self.get.get_monster_stats(monster)[2]/100
-                         + self.get.get_monster_stats(monster)[3]/100
-                         + self.get.get_monster_stats(monster)[1]/100)/7
+                        (mon_health/100 + mon_stamina/100 + mon_speed/100)/7
                          )
             self.total.append(self.ans)
             self.division(5, self.ans)
@@ -93,12 +88,12 @@ class Calculate:
             self.total = [abs(x - 0.1) for x in self.total]
             self.total.append(1-sum(self.total))
         
-    def calculate_stamina_consumed(self):
-        return ((100/self.get.get_playerstats()[2])*0.9)+3
+    def calculate_stamina_consumed(self, stamina):
+        return (100/stamina*0.9)+3
 
 
-    def mon_calc_dodge(self, monster):
-        return (self.get.get_monster_stats(monster)[3]/100 + self.get.get_monster_stats(monster)[2]/100)/3
+    def mon_calc_dodge(self, mon_speed, mon_stamina):
+        return (mon_speed/100 + mon_stamina/100)/3
 
-    def mon_counterattack_chance(self, monster):
-        return (self.get.get_monster_stats(monster)[3]/100 + self.get.get_monster_stats(monster)[2]/100)/7
+    def mon_counterattack_chance(self, mon_stamina, mon_speed):
+        return (mon_stamina/100 + mon_speed/100)/7

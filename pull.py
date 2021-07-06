@@ -34,27 +34,31 @@ class Pull(Auth):
 	def __init__(self, username, password):
 		super().__init__(username, password)
 
+	def pull_values(self, statement):
+		self.conn = psycopg2.connect(dbname=f"{self.username}_game", user=f"{self.username}",
+						password=f"{self.password}", host="127.0.0.1")
+		self.cur = self.conn.cursor()	
+		self.cur.execute("{}".format(statement))
+		self.conn.commit()
+		self.values = self.cur.fetchone()
+		self.log_out()
+		return self.values
+
 	def pull_table(self, statement):
 		self.conn = psycopg2.connect(dbname=f"{self.username}_game", user=f"{self.username}",
 						password=f"{self.password}", host="127.0.0.1")
 		self.cur = self.conn.cursor()	
 		self.cur.execute("{}".format(statement))
 		self.conn.commit()
-		self.values = self.login.cur.fetchall()
-		self.log_out()
-		return self.values
-
-	def pull_val(self, statement):
-		print(self.username)
-		self.conn = psycopg2.connect(dbname=f"{self.username}_game", user=f"{self.username}",
-						password=f"{self.password}", host="127.0.0.1")
-		self.cur = self.conn.cursor()
-		self.cur.execute("{}".format(statement))
 		self.values = self.cur.fetchone()
 		self.log_out()
 		return self.values
 
+
+
 	def update_values(self, statement):
+		self.conn = psycopg2.connect(dbname=f"{self.username}_game", user=f"{self.username}",
+						password=f"{self.password}", host="127.0.0.1")
 		self.cur = self.conn.cursor()
 		self.cur.execute("UPDATE {}".format(statement))
 		self.conn.commit()

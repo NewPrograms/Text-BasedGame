@@ -11,9 +11,9 @@ class Main:
         # Initialize the variables
         self.username = input("Add a username: ")
         self.password = input("Add a password: ")
-        self.auth = Auth(self.username, self.password
-                        )
+        self.auth = Auth(self.username, self.password)
         self.menu = Menu(self.username, self.password)
+        self.scenes = Scenes(self.username, self.password)
         # Other values
 
         self.has_logged_in = False
@@ -25,16 +25,15 @@ class Main:
         # Functions will ran here
         if self.auth.auth() == True:
             self.menu.start_menu()
-            
-            if self.menu() is True:
+            if self.menu.choose() is True:
                     self.act()
             
             else:
-                self.menu.start_menu()
+                self.menu.choose()
         
         
     def act(self):
-        self.scenarios.starting_scene()
+        self.scenes.starting_scene()
     
     def add_u_name(self):
         return [input("Add a username: ")]

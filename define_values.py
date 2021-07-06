@@ -35,7 +35,7 @@ to_create = {
 to_input = {
 			'stats':[
 				'player_name, health, stamina, damage, gold, mana', 
-				'VALUES ({}, {}, {}, {}, {}, {})'.format(50, 60, 70, 80, 0)
+				'VALUES ({}, {}, {}, {}, {})'.format(50, 60, 70, 80, 0)
 			],
 			'monsters': [
 				'monster_name, health, stamina, speed, damage, gold_drop, mana',
