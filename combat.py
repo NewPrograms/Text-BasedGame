@@ -3,13 +3,15 @@ import sys
 from numpy.random import choice
 import threading
 from pull import Pull
-from player import Player, PlayerActions, PlayerEffects
-from monster import Monster, MonsterActions, MonsterEffects
+from storage import PlayerStorage
+from player import PlayerActions, PlayerEffects
+from monster import MonsterActions, MonsterEffects
 from calc_poss import Calculate
 class Combat:
 
     def __init__(self, username, password, monster):
         self.pull = Pull(username, password)
+        self.player_storage = PlayerStorage(username, password)
         self.calculate_poss = Calculate()
         self.monster_name = monster
         
@@ -68,89 +70,53 @@ class Combat:
                                                         self.monster.mon_speed, self.monster.mon_stamina
                                                         )
                         ) is True:
-                       self.player_effects.got_hit(
-                                    self.monster.attack(
-                                        self.calculate_poss.undeadmon_att_succ(self.monster.mon_health,
-                                                                                 self.monster.mon_speed, 
-                                                                                 self.monster.mon_stamina)
-                                        )
-                       )
-                       self.player_effects.loses_stamina()
-                       self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(
-                                                self.monster.mon_stamina
-                                                    ))
-                       return False
+                        # This is for the function when the player is hit 
+                        self.player_hit()
+                        return False
                         
                     else:
-                        self.player_effects.loses_stamina()
-                        self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(
-                                                    self.monster.mon_stamina))
+                        # This is for the function when something misses or when both monster
+                        # and player loses their stamina
+                        self.both_loses_stamina()
                         return False
                 else:
+                    # This is for when the monster is hit.
                     print("It hit!")
-                    self.monster_effects.monster_damaged(self.player.attack())
-                    self.player_effects.loses_stamina()
-                    self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(
-                                                self.monster.mon_stamina
-                                                ))
+                    self.monster_hit()
                     return True if self.monster.is_dead() else False
 
             
         elif chosen == "2":
 
             if self.player.run() == "Successful":
+                # This is a function when both monster and player loses their stamina
                 print(" You have ran away!")
-                self.player_effects.loses_stamina()
-                self.monster_effects.loses_stamina(
-                                        self.calculate_poss.calculate_stamina_consumed(
-                                                    self.monster.mon_stamina
-                                                    ))
+                self.both_loses_stamina()
                 return True
 
             else:
-                    self.player_effects.got_hit(
-                                        self.monster.attack(
-                                        self.calculate_poss.undeadmon_att_succ(
-                                                            self.monster.mon_health, 
-                                                            self.monster.mon_speed, 
-                                                            self.monster.mon_stamina)
-                                        ))
-                    self.player_effects.loses_stamina()
-                    self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(self.monster.mon_stamina))
-                    return False
+                # This is for the function where the player is hit.
+                self.player_hit()
+                return False
                     
         elif chosen == "3":
             # Make a function that blocks the enemies attacks.
             # IF shield IN storage
                 # Defend()
-            if 'shield' in self.get.get_storage():
-                if self.is_defended() is True:
-                    self.player_effects.loses_stamina()
-                    self.monster_effects.loses_stamina()
+            if 'shield' in self.player_storage.get_items():
+                if self.player.defend() is True:
+                    self.both_loses_stamina()
                 else:
-                    # Call self.player.got_hit()
-                    # Call self.player.loses_stamina()
-                    # Call self.monster.loses_stamina()
-                    pass
+                    self.player_hit()
 
             else: 
                 print("You can't! You don't have a shield yet!")
-            # Call player_loses_stamina
-                self.player_effects.loses_stamina()
-            # Call player_loses_health
-                self.player_effects.got_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(
-                                                        self.monster.mon_health, 
-                                                        self.monster.mon_speed, 
-                                                        self.monster.mon_stamina
-                )))
-            # Call monster loses stamina
-                self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed())
-
+                self.player_hit()
         elif chosen == "4":
             self.result = self.player.hide()
             
             if self.result == 'Successful':
-                self.player_effects.loses_stamina()
+                self.player_effects.loses_stamina(self.calculate_poss.calculate_player_stamina_consumed())
                 print("You hid succesfully!")
                 return True
             
@@ -160,10 +126,8 @@ class Combat:
             
             else:
                 print("the monster saw you and has now hit you!.")
-                self.player_effects.got_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(
-                    self.monster.mon_health, self.monster.mon_speed, self.monster.mon_stamina
-                    )))
-                self.monster.loses_stamina(self.calculate_poss.calculate_stamina_consumed(self.monster.mon_stamina))
+                # This is for the function where the player get's hit and the monster loses stamina
+                self.player_hit()
                 return False
         
         elif chosen == "5":
@@ -198,8 +162,26 @@ class Combat:
     
     
                 
-    def is_defended(self):
-        # This is for the chances of defending an attack
-        total =  self.calculate_poss.calc_success +  0.1 
-        return choice([True, False], p=[total, abs(1-total)])
 
+    def both_loses_stamina(self):
+        # This is a function when the player and monster are both hit.
+        self.player_effects.loses_stamina(
+                           self.calculate_poss.calculate_player_stamina_consumed(self.player.stamina)
+                           )
+        self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(
+                                                self.monster.mon_stamina
+                                                    ))
+
+    def player_hit(self):
+        self.player_effects.got_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(
+                    self.monster.mon_health, self.monster.mon_speed,
+                    self.monster.mon_stamina, 4 # This is the supposed length of the list
+                    ), self.monster.mon_damage))
+        self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(self.monster.mon_stamina))
+
+    def monster_hit(self):
+        self.monster_effects.monster_damaged(self.player.attack())
+        self.player_effects.loses_stamina(self.calculate_poss.calculate_player_stamina_consumed(self.player.stamina))
+        self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(
+                                                self.monster.mon_stamina
+                                                ))

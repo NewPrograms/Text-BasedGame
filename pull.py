@@ -50,7 +50,7 @@ class Pull(Auth):
 		self.cur = self.conn.cursor()	
 		self.cur.execute("{}".format(statement))
 		self.conn.commit()
-		self.values = self.cur.fetchone()
+		self.values = self.cur.fetchall()
 		self.log_out()
 		return self.values
 

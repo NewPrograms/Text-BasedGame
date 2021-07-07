@@ -31,7 +31,9 @@ class PlayerActions(Player):
 		# and calculate it to get the weights of choices
 		return choice(
 				['Successful', 'You got hit!'], 
-				p=[abs(self.calculate_poss.calc_success(self.health)), abs(self.calculate_poss.calc_fail())]
+				p=[
+					abs(self.calculate_poss.calc_success(self.health, self.stamina)),
+				 	abs(self.calculate_poss.calc_fail(self.health, self.stamina))]
 				)
 
 	def hide(self):
@@ -41,22 +43,18 @@ class PlayerActions(Player):
 						)
 
 	def attack(self):
+		print(self.calculate_poss.get_possibilities(5, self.damage))
 		# This is to get the damage and possibilities for damage.
 		return choice(
-					self.calculate_poss.get_possibilities(self.damage),
+					self.calculate_poss.get_possibilities(5, self.damage),
 					p=self.calculate_poss.get_final_val() # WTF WHAT DOES THIS SHIT MEAN!
 					)
 
-	# DEFINE DEFEND
+
 	def defend(self):
-		# This is a function that allows the player to defend
-		if self.is_defended is True:
-			print('Defended!')
-			
-			# Call losing_durability
-		# ElSE
-			# PRINT('He hit you!')
-			# Call functin losing health, stamina, and monster_stamina
+        # This is for the chances of defending an attack
+		total =  self.calculate_poss.calc_success() +  0.1 
+		return choice([True, False], p=[total, abs(1-total)])
 
 from pull import Pull
 class PlayerEffects(Player):
@@ -75,12 +73,12 @@ class PlayerEffects(Player):
 		else:
 			print("You got hit! -{} health points".format(res))
 			self.pull.update_values(
-				"player SET health = {} - {}".format(
+				"stats SET health = {} - {}".format(
 				self.health, res) 
 				)
 
-	def loses_stamina(self):
+	def loses_stamina(self, stamina_lost):
 		self.pull.update_values(
-			"player SET stamina = {} - 5".format(self.stamina())
+			"stats SET stamina = {} - {}".format(self.stamina, stamina_lost)
 		 )
 	

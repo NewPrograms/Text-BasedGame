@@ -1,10 +1,12 @@
 from sys import excepthook
 import psycopg2
+from pull import Pull
 from Items import Items
 from storage import MerchantStorage
 class Merchant:
 
 	def __init__(self,username, password):
+		self.pull = Pull(username, password)
 		self.items = Items(username, password)
 		self.merchant_storage = MerchantStorage(username, password)
 	
@@ -27,7 +29,6 @@ class Merchant:
 
 	def buy_item(self):
 		try:
-			chosen_item =  self.choose_what_to_buy()
 			self.pull.pull_table("SELECT transaction({}, '{}')".format(
 								 int(input("How many? ")), input("What item do you want to buy? ")
  								))

@@ -37,16 +37,12 @@ class MonsterActions(Monster):
 		super().__init__(values)
 		self.calculate_poss = Calculate()
 
-	def attack(self, poss):
-		print(self.monster)
-		if self.monster == 'zombies':
-			return choice(['Miss',16, 17, 18, 19, 20], p=poss)
-			
-		
-		if self.monster == 'skeletons':
-			return choice(['Miss', 6, 7, 8, 9, 10], p=poss)
-			
-
+	def attack(self, poss, damage):
+		damages = [val for val in self.calculate_poss.get_possibilities(4,damage)]
+		damages.append('Miss')
+		print(damages)
+		print(poss)
+		return choice(damages , p=poss)
 
 	def dodge(self, poss):
 		return choice(['Hit', 'Miss'], p=[poss, 1-poss] )

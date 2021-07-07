@@ -31,7 +31,7 @@ class Scenes:
             "[3] The twisted trees at the right.")
         self.choose = input("Choose: ")
         if self.choose == '1':
-            self.wolves
+            self.wolves()
 
         elif self.choose == '2':
             self.entering_temple()

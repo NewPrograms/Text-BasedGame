@@ -32,7 +32,8 @@ class Menu:
         chosen = input("Choose: ")
 
         if chosen == '1':
-           return True  
+            print(True)
+            return True  
         elif chosen == '2':
             read_lines.read_lines('instructions.txt')
 
