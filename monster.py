@@ -13,14 +13,14 @@ class Monster:
 
 	def print_monster_stats(self):
 		print(
-			"Monster:{}\nHealth:{}\nStamina:{}\nDamage:P{}\nMana:{}\nSpeed:{}, Gold Drop: {}"
+			"Monster:{}\nHealth:{}\nStamina:{}\nDamage:{}\nMana:{}\nSpeed:{}\nGold Drop: {}"
 			.format(
 				self.monster,self.mon_health, self.mon_stamina, self.mon_damage
 				,self.mon_mana, self.mon_speed, self.mon_gold_drop
 				)
 			)
-	def is_dead(self):
-		if self.mon_health <= 0:
+	def is_dead(self, damage):
+		if self.mon_health - damage <= 0:
 			print("The monster has died!")
 			return True
 
@@ -40,8 +40,6 @@ class MonsterActions(Monster):
 	def attack(self, poss, damage):
 		damages = [val for val in self.calculate_poss.get_possibilities(4,damage)]
 		damages.append('Miss')
-		print(damages)
-		print(poss)
 		return choice(damages , p=poss)
 
 	def dodge(self, poss):

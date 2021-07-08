@@ -15,8 +15,6 @@ class Combat:
         self.calculate_poss = Calculate()
         self.monster_name = monster
         
-        # These are for the values of the player.
-        
         # Define the values for player actions.            
         self.player = PlayerActions(
                 self.pull.pull_values('SELECT * FROM stats')
@@ -55,8 +53,9 @@ class Combat:
             self.monster.print_monster_stats()
             if self.monster.mon_stamina <= 10:
                 print("The monster is tired!")
-                self.monster_effects.monster_damaged(self.player.attack())
-                return True if self.monster.is_dead() else False
+                self.damage = self.player.attack()
+                self.monster_effects.monster_damaged(self.damage)
+                return True if self.monster.is_dead(self.damage) else False
 
 
             else:
@@ -71,19 +70,21 @@ class Combat:
                                                         )
                         ) is True:
                         # This is for the function when the player is hit 
+                        print("The player has been hit!")
                         self.player_hit()
                         return False
                         
                     else:
                         # This is for the function when something misses or when both monster
                         # and player loses their stamina
+                        print("The counter attack misses!")
                         self.both_loses_stamina()
                         return False
                 else:
                     # This is for when the monster is hit.
                     print("It hit!")
-                    self.monster_hit()
-                    return True if self.monster.is_dead() else False
+                    return True if self.monster_hit() is True else False
+
 
             
         elif chosen == "2":
@@ -97,7 +98,7 @@ class Combat:
             else:
                 # This is for the function where the player is hit.
                 self.player_hit()
-                return False
+                self.win = False
                     
         elif chosen == "3":
             # Make a function that blocks the enemies attacks.
@@ -136,7 +137,7 @@ class Combat:
         
         else:
             print("Invalid Choice!")
-            sys.exit() 
+            self.pull.restart()
         
 
 
@@ -173,15 +174,20 @@ class Combat:
                                                     ))
 
     def player_hit(self):
-        self.player_effects.got_hit(self.monster.attack(self.calculate_poss.undeadmon_att_succ(
+        self.res = self.monster.attack(self.calculate_poss.undeadmon_att_succ(
                     self.monster.mon_health, self.monster.mon_speed,
                     self.monster.mon_stamina, 4 # This is the supposed length of the list
-                    ), self.monster.mon_damage))
+                    ), self.monster.mon_damage)
+        self.player_effects.got_hit(self.res)
         self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(self.monster.mon_stamina))
-
+        self.player_effects.is_dead(self.res)
+        self.player_effects.is_tired
     def monster_hit(self):
-        self.monster_effects.monster_damaged(self.player.attack())
+        self.damage = self.player.attack()
+        self.monster_effects.monster_damaged(self.damage)
         self.player_effects.loses_stamina(self.calculate_poss.calculate_player_stamina_consumed(self.player.stamina))
         self.monster_effects.loses_stamina(self.calculate_poss.calculate_stamina_consumed(
                                                 self.monster.mon_stamina
                                                 ))
+        self.player_effects.is_tired()
+        return True if self.monster.is_dead(self.damage) else False

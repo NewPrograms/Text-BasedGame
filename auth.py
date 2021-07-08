@@ -6,8 +6,8 @@ class Auth():
 	def __init__(self, username = None, password = None):
 		# These two define the username and password
 		if username and password is None:
-			self.username = "postgres"
-			self.password = "12"
+			self.username = "postgressdsdsd"
+			self.password = "1223"
 		else:
 			self.username = username
 			self.password = password
@@ -34,7 +34,7 @@ class Auth():
 		self.cur = self.conn.cursor()
 
 	def sign_in(self):
-		conn = psycopg2.connect(dbname=f"postgres", user=f"postgres", password="12", host="127.0.0.1")
+		conn = psycopg2.connect(dbname=f"postgressd", user=f"postgressdasda", password="1212", host="127.0.0.1")
 		cur = conn.cursor()
 		cur.execute(f"CREATE USER {self.username} WITH PASSWORD '{self.password}'")
 		conn.commit()

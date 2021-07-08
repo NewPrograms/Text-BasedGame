@@ -21,8 +21,8 @@ class Setup():
 	def create_db(self):
 		# Creates database
 			auto_commit = extensions.ISOLATION_LEVEL_AUTOCOMMIT
-			self.conn = psycopg2.connect(dbname='postgres', user='postgres', 
-										password=f'12', host='127.0.0.1' )
+			self.conn = psycopg2.connect(dbname='postgres12312', user='postgr12312es', 
+										password=f'1231232', host='127.0.0.1' )
 			self.conn.set_isolation_level(auto_commit)
 			self.cur = self.conn.cursor()
 			self.cur.execute(f'ALTER ROLE {self.acc_u_name} CREATEDB')

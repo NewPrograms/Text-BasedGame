@@ -56,3 +56,4 @@ class Items:
 
 		else: 
 			print("You typed the wrong letter!")
+			self.more_info()

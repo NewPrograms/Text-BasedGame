@@ -76,7 +76,6 @@ class Calculate:
             return val
         else:
             self.ans = val/5 + self.division(n-1, val)
-            print(val)
             self.total.append(self.ans)
             return self.ans
 

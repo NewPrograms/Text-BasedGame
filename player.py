@@ -1,4 +1,5 @@
 # Import player and get_values
+import sys
 from numpy.random import choice, random
 from calc_poss import Calculate
 class Player:
@@ -14,6 +15,7 @@ class Player:
 
 
 
+
 	def player_stats(self):
 		print(
 			"Health:{}\nStamina:{}\nDamage:{}\nGold:{}\nMana:{}\n"
@@ -22,6 +24,11 @@ class Player:
 				, self.gold, self.mana
 				)
 			)
+
+
+				
+
+	
 class PlayerActions(Player):
 	def __init__(self, values):
 			super().__init__(values)
@@ -82,3 +89,18 @@ class PlayerEffects(Player):
 			"stats SET stamina = {} - {}".format(self.stamina, stamina_lost)
 		 )
 	
+	def is_dead(self, res):
+		if res == 'Miss':
+			print("Whew! Still alive!")
+		else:
+			if self.health - int(res) <= 0:
+				print("Player is dead!")
+				self.pull.restart()
+				sys.exit()
+
+	def is_tired(self):
+		if self.stamina <= 0:
+			print("Player is tired! and the monster has killed him!")
+			self.pull.restart()
+			sys.exit()
+

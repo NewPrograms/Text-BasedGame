@@ -63,3 +63,11 @@ class Pull(Auth):
 		self.cur.execute("UPDATE {}".format(statement))
 		self.conn.commit()
 		self.log_out()
+	
+	def restart(self):
+		self.conn = psycopg2.connect(dbname=f"{self.username}_game", user=f"{self.username}",
+						password=f"{self.password}", host="127.0.0.1")
+		self.cur = self.conn.cursor()
+		self.cur.execute("SELECT restart();")
+		self.conn.commit()
+		self.log_out()

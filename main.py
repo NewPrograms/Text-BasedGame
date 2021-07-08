@@ -25,12 +25,10 @@ class Main:
         # Functions will ran here
         if self.auth.auth() == True:
             self.menu.start_menu()
-            if self.menu.choose() is True:
-                    self.act()
-            
-            else:
+            while self.menu.loop is not True:
                 self.menu.choose()
-        
+
+            self.act() 
         
     def act(self):
         self.scenes.starting_scene()

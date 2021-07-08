@@ -1,4 +1,5 @@
 # This is the part where all scenarios are typed our or played out.
+from pull import Pull
 from combat import Combat
 from merchant import Merchant
 class Scenes:
@@ -8,7 +9,7 @@ class Scenes:
         self.u_name = u_name
         self.password = password
         self.merchant = Merchant(self.u_name, self.password)
-
+        self.pull = Pull(self.u_name, self.password)
     def starting_scene(self):
         print(
             "Huff! Huff! Those zombies are everywhere! I don't know if I can escape\nn",
@@ -19,9 +20,15 @@ class Scenes:
             "ask for reinforcements. Being close to him I was picked. Unfortunately, zombies noticed me moving",
             " and have been hunting me ever since.", "Damn it! How can I escape this! "
             )
+        self.enter_combat_zombies()
+
+    def enter_combat_zombies(self):
         self.monster = 'zombies'
-        if self.conditions(self.monster) is True:
+        if self.conditions(self.monster)is True:
             self.diverging_of_path()
+
+        else:
+            self.enter_combat_zombies()
 
     def diverging_of_path(self):
         print("Gasp... Gasp... Luckily I made it out there! Now where should I go...")
@@ -46,10 +53,15 @@ class Scenes:
             "Why did I choose this path.(Hears clanking noises)",
             "Damn it! Better get ready."
  )
+        self.enter_skeletons()
+
+    def enter_skeletons(self):       
         self.monster = 'skeletons'
         if self.conditions(self.monster) is True:
             self.zombies_again()
-        
+
+        else:
+            self.enter_skeletons()
     def zombies_again(self):
         print(
             "Sighhhh.... Luckily I survived...(Walks away)\n",
@@ -57,23 +69,30 @@ class Scenes:
             "(Looks around) Damnnnnn Where am I?(Grrrrrr.....)",
             "Oh crap looks like I have to do this all over again."
             )
+        self.enter_zombies() 
+    def enter_zombies(self):
         self.monster = 'zombies'
         if self.conditions(self.monster) is True:
             self.end()
-        
 
+        else:
+            self.enter_zombies()
+        
     def wolves(self):
         print(
             "This path looks easy as I thought it would be!\n",
             "Looks like this would be a breeze!(Hears howls)",
             "Wha-!(Wolves Enter) Mother-"
             )
+        self.enter_wolves()
+
+    def enter_wolves(self):
         self.monster = 'wolves'
         if self.conditions(self.monster) is True:
             self.end()
-        
-    
-    
+
+        else:
+            self.enter_wolves() 
     def entering_temple(self):
         print(
             "This temple is sure looking old! Hmmm... better be ",
@@ -87,16 +106,22 @@ class Scenes:
         
         else:
             self.merchant.menu()
+
     def conditions(self, monsters):
-        # The cause of the bug is unkown but this is the possbile reason.
         self.combat = Combat(self.u_name, self.password, monsters)
-        if self.combat.options() is True:
+        if  self.combat.options() is True:
             return True
-
-
+        
         else:
-            self.conditions(self.monster)
+           return False 
+
+
+
+
+       
+
 
     def end(self):
         # This is the end of the game.
         print("I made it out! Damn what should I do next....")
+        self.pull.restart()

@@ -37,6 +37,10 @@ class Merchant:
 		except psycopg2.errors.RaiseException:
 			print("Sold out!!!!!!!!!!!!")
 			self.menu()
+
+		except psycopg2.errors.UndefinedColumn:
+			print("You typed the wrong item name!")
+			self.menu()
 		
 
 

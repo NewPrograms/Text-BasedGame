@@ -9,6 +9,7 @@ class Menu:
     def __init__(self, username, password):
         self.start_game = False
         self.pull = Pull(username, password)
+        self.loop = False
     def start_menu(self):
         """
             This will act as the start menu of the program
@@ -30,10 +31,8 @@ class Menu:
 		    of the player. 
         """
         chosen = input("Choose: ")
-
         if chosen == '1':
-            print(True)
-            return True  
+            self.loop = True
         elif chosen == '2':
             read_lines.read_lines('instructions.txt')
 
